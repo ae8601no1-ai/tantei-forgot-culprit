@@ -86,11 +86,13 @@ test("GAME START explains the database without revealing the first search key", 
   assert.equal(canonical.gameStart.body.includes("**黒凪島**。"), false);
 });
 
-test("island and mansion records include their map attachments", async () => {
+test("database visual records include their attachments", async () => {
   assert.match(recordMedia.SCRIPT_001.src, /kuronagi-island-map\.svg$/);
   assert.match(recordMedia.SCRIPT_002.src, /kuronagi-mansion-floor-map\.svg$/);
+  assert.match(recordMedia.SCRIPT_033.src, /old-photo-1998\.jpg$/);
   for (const media of Object.values(recordMedia)) {
     const file = new URL(`../public${media.src}`, import.meta.url);
-    assert.match(await readFile(file, "utf8"), /<svg/);
+    const data = await readFile(file);
+    assert.ok(data.length > 0, media.src);
   }
 });

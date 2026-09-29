@@ -10,5 +10,12 @@
     "alt": "黒凪館の内部地図。地下、1階、2階の各部屋と階段、裏口を示す",
     "label": "ATTACHED FILE｜黒凪館 内部地図",
     "caption": "館内見取図｜地下・1階・2階"
+  },
+  "SCRIPT_033": {
+    "src": "/assets/evidence/old-photo-1998.jpg",
+    "alt": "1998年8月に黒凪館の庭で撮影された古写真。男女4人と少年1人が並び、少年の顔だけは輪郭を残して不鮮明になっている",
+    "label": "EVIDENCE FILE｜古写真",
+    "actionLabel": "EXPAND IMAGE",
+    "caption": "撮影時期：1998年8月｜撮影者：御影香織｜撮影場所：黒凪館 庭"
   }
 }

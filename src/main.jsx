@@ -34,7 +34,7 @@ function RecordMedia({ media, onExpand }) {
     <div className="media-label">{media.label}</div>
     <button type="button" onClick={onExpand} aria-label={`${media.label}を拡大表示`}>
       <img src={media.src} alt={media.alt} />
-      <span>EXPAND MAP</span>
+      <span>{media.actionLabel ?? "EXPAND MAP"}</span>
     </button>
     <figcaption>{media.caption}</figcaption>
   </figure>;
