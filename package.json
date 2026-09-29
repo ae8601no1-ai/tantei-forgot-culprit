@@ -1,0 +1,21 @@
+{
+  "name": "tantei-forgot-culprit",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "generate:data": "node scripts/extract-canonical.mjs",
+    "dev": "vite",
+    "build": "node scripts/extract-canonical.mjs && vite build",
+    "test": "node scripts/extract-canonical.mjs && node --test tests/*.test.mjs"
+  },
+  "dependencies": {
+    "@vitejs/plugin-react": "latest",
+    "vite": "latest",
+    "typescript": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "lucide-react": "latest"
+  },
+  "devDependencies": {}
+}

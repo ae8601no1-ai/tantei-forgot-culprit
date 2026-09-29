@@ -1,0 +1,15 @@
+{
+  "crossSearch": ["SCRIPT_027", "SCRIPT_031", "SCRIPT_037", "SCRIPT_020"],
+  "advancedCrossSearch": ["SCRIPT_058", "SCRIPT_059", "SCRIPT_057"],
+  "clearRequired": ["SCRIPT_038", "SCRIPT_042", "SCRIPT_048", "SCRIPT_051", "SCRIPT_063", "SCRIPT_064", "SCRIPT_065", "SCRIPT_066", "SCRIPT_067"],
+  "recordRequirements": {
+    "SCRIPT_042": ["SCRIPT_041"],
+    "SCRIPT_044": ["SCRIPT_043"],
+    "SCRIPT_046": ["SCRIPT_045"],
+    "SCRIPT_064": ["SCRIPT_063"],
+    "SCRIPT_065": ["SCRIPT_064"],
+    "SCRIPT_066": ["SCRIPT_065"],
+    "SCRIPT_067": ["SCRIPT_066"]
+  },
+  "lockedVisible": ["SCRIPT_042", "SCRIPT_044", "SCRIPT_046", "SCRIPT_064", "SCRIPT_065", "SCRIPT_066", "SCRIPT_067"]
+}
