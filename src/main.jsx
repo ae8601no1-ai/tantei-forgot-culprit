@@ -67,7 +67,7 @@ function App() {
     <div className="scanlines" aria-hidden="true" />
     <header className="masthead">
       <div className="brand"><Database /><div><b>KUZE PRIVATE INVESTIGATION DATABASE</b><span>CASE ID：KN-2026-08</span></div></div>
-      <div className="status"><ShieldCheck /><span>DATABASE ONLINE</span><b>VIEWED {String(state.viewedRecords.length).padStart(2, "0")} / {canonical.records.length}</b></div>
+      <div className="status"><ShieldCheck /><span>DATABASE ONLINE</span><b>PAGE {currentRecord ? String(currentRecord.number).padStart(2, "0") : "00"} / {canonical.records.length}</b></div>
     </header>
 
     <div className="workspace">

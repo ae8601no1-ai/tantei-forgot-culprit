@@ -77,3 +77,10 @@ test("aliases and completion requirements are data-driven", () => {
   const outcome = search("久世負傷", before);
   assert.equal(outcome.state.completed, true);
 });
+
+test("GAME START explains the database without revealing the first search key", () => {
+  assert.match(canonical.gameStart.body, /人物、場所、資料、音声記録を検索するためのもの/);
+  assert.match(canonical.gameStart.body, /すべての情報は、このデータベースに入力済み/);
+  assert.equal(canonical.gameStart.body.includes("最初に確認すべき場所"), false);
+  assert.equal(canonical.gameStart.body.includes("**黒凪島**。"), false);
+});
