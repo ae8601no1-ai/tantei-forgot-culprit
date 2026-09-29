@@ -1,0 +1,14 @@
+{
+  "SCRIPT_001": {
+    "src": "/assets/maps/kuronagi-island-map.svg",
+    "alt": "黒凪島の島内地図。中央の黒凪館、北部の旧灯台、北東部の旧桟橋、東岸の桟橋、南西部の入り江を示す",
+    "label": "ATTACHED FILE｜黒凪島 島内地図",
+    "caption": "島内調査用地図｜方位・主要地点・連絡路"
+  },
+  "SCRIPT_002": {
+    "src": "/assets/maps/kuronagi-mansion-floor-map.svg",
+    "alt": "黒凪館の内部地図。地下、1階、2階の各部屋と階段、裏口を示す",
+    "label": "ATTACHED FILE｜黒凪館 内部地図",
+    "caption": "館内見取図｜地下・1階・2階"
+  }
+}

@@ -17,6 +17,88 @@ footer {
   justify-content: center;
 }
 
+.record-media {
+  margin: 38px 0 0;
+  border: 1px solid #34423b;
+  background: #090d0b;
+  padding: 12px;
+}
+
+.media-label {
+  color: #8da097;
+  font-size: 10px;
+  letter-spacing: .16em;
+  padding: 2px 3px 12px;
+}
+
+.record-media button {
+  display: block;
+  position: relative;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: #050806;
+  cursor: zoom-in;
+}
+
+.record-media img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.record-media button span {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  padding: 8px 11px;
+  border: 1px solid #71867b;
+  background: #07100de6;
+  color: #c2d0c8;
+  font-size: 9px;
+  letter-spacing: .15em;
+}
+
+.record-media figcaption {
+  color: #66736c;
+  font-size: 10px;
+  letter-spacing: .1em;
+  padding: 11px 3px 1px;
+}
+
+.media-modal {
+  position: fixed;
+  z-index: 40;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 58px 22px 22px;
+  background: #020403f2;
+  cursor: zoom-out;
+}
+
+.media-modal img {
+  display: block;
+  max-width: 96vw;
+  max-height: calc(100vh - 84px);
+  border: 1px solid #65766d;
+  background: #090e0c;
+  cursor: default;
+}
+
+.media-close {
+  position: fixed;
+  top: 16px;
+  right: 20px;
+  border: 1px solid #516058;
+  background: #0c1210;
+  color: #c1ccc6;
+  padding: 9px 13px;
+  font-size: 10px;
+  letter-spacing: .14em;
+  cursor: pointer;
+}
+
 @media (max-width: 760px) {
   .status b {
     font-size: 8px;

@@ -6,6 +6,7 @@ import canonical from "../src/data/canonical-script.json" with { type: "json" };
 import searchDb from "../src/data/search-db.json" with { type: "json" };
 import aliases from "../src/data/aliases.json" with { type: "json" };
 import unlocks from "../src/data/unlocks.json" with { type: "json" };
+import recordMedia from "../src/data/record-media.json" with { type: "json" };
 import { applyRecord, initialState, normalizeAudio, search } from "../src/lib/engine.js";
 
 const hash = (value) => createHash("sha256").update(value, "utf8").digest("hex");
@@ -83,4 +84,13 @@ test("GAME START explains the database without revealing the first search key", 
   assert.match(canonical.gameStart.body, /すべての情報は、このデータベースに入力済み/);
   assert.equal(canonical.gameStart.body.includes("最初に確認すべき場所"), false);
   assert.equal(canonical.gameStart.body.includes("**黒凪島**。"), false);
+});
+
+test("island and mansion records include their map attachments", async () => {
+  assert.match(recordMedia.SCRIPT_001.src, /kuronagi-island-map\.svg$/);
+  assert.match(recordMedia.SCRIPT_002.src, /kuronagi-mansion-floor-map\.svg$/);
+  for (const media of Object.values(recordMedia)) {
+    const file = new URL(`../public${media.src}`, import.meta.url);
+    assert.match(await readFile(file, "utf8"), /<svg/);
+  }
 });
