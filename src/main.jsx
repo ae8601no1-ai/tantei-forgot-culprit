@@ -4,6 +4,7 @@ import { Database, RotateCcw, Search as SearchIcon, ShieldCheck, Terminal } from
 import canonical from "./data/canonical-script.json" with { type: "json" };
 import { initialState, search } from "./lib/engine.js";
 import "./styles.css";
+import "./additions.css";
 
 const SAVE_KEY = "kuze-private-investigation-db-v1";
 const recordContent = Object.fromEntries(canonical.records.map((record) => [record.id, record]));
@@ -66,7 +67,7 @@ function App() {
     <div className="scanlines" aria-hidden="true" />
     <header className="masthead">
       <div className="brand"><Database /><div><b>KUZE PRIVATE INVESTIGATION DATABASE</b><span>CASE ID：KN-2026-08</span></div></div>
-      <div className="status"><ShieldCheck /> DATABASE ONLINE</div>
+      <div className="status"><ShieldCheck /><span>DATABASE ONLINE</span><b>VIEWED {String(state.viewedRecords.length).padStart(2, "0")} / {canonical.records.length}</b></div>
     </header>
 
     <div className="workspace">
@@ -85,7 +86,7 @@ function App() {
         </form>
 
         <article className={`result-card status-${result.status.toLowerCase()}`}>
-          <div className="result-label"><span>SEARCH RESULT</span><span>{result.status}</span></div>
+          <div className="result-label"><span>SEARCH RESULT</span><span>{currentRecord ? `PAGE ${String(currentRecord.number).padStart(2, "0")} / ${canonical.records.length}` : `PAGE 00 / ${canonical.records.length}`}　{result.status}</span></div>
           <h1>{currentRecord?.title ?? result.title ?? "DATABASE MESSAGE"}</h1>
           <RichText text={currentRecord?.body ?? result.body} />
           {result.suggestion && <button className="suggestion" onClick={() => runSearch(result.suggestion)}>「{result.suggestion}」を検索</button>}
@@ -97,7 +98,7 @@ function App() {
 
     {showEnding && <div className="ending-screen"><button className="return-db" onClick={() => setShowEnding(false)}>DATABASEへ戻る</button><section><h1>CASE RECONSTRUCTION</h1><RichText text={canonical.ending.caseReconstruction.body} /></section><section><h1>PERSONAL NOTE</h1><RichText text={canonical.ending.personalNote.body} /></section><section className="final-card"><RichText text={canonical.ending.finalCard.body} /></section></div>}
 
-    <footer>GOTO ARG LAB｜体験型ミステリー</footer>
+    <footer><span>このページはARG用です。全ての個人名。地名はフィクションです。</span><span>GOTO ARG LAB｜体験型ミステリー</span></footer>
   </main>;
 }
 
