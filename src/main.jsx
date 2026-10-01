@@ -195,7 +195,6 @@ function App() {
           <h1>{currentRecord?.title ?? result.title ?? "DATABASE MESSAGE"}</h1>
           <RichText text={currentRecord?.body ?? result.body} />
           <RecordMedia media={currentMedia} onExpand={() => setExpandedMedia(currentMedia)} />
-          {result.suggestion && <button className="suggestion" onClick={() => runSearch(result.suggestion)}>「{result.suggestion}」を検索</button>}
           {result.status !== "START" && <button className="back-top" onClick={goTop}><ArrowLeft /> データベースTOPへ戻る</button>}
         </article>
       </section>

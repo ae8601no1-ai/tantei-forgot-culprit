@@ -76,25 +76,6 @@ function response(status, body, extras = {}) {
   return { status, body, ...extras };
 }
 
-function levenshtein(a, b) {
-  const rows = Array.from({ length: a.length + 1 }, (_, index) => [index]);
-  for (let j = 1; j <= b.length; j += 1) rows[0][j] = j;
-  for (let i = 1; i <= a.length; i += 1) {
-    for (let j = 1; j <= b.length; j += 1) {
-      rows[i][j] = Math.min(rows[i - 1][j] + 1, rows[i][j - 1] + 1, rows[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
-    }
-  }
-  return rows[a.length][b.length];
-}
-
-function suggestion(input, state) {
-  const available = singleRecords.filter((record) => record.phase === 1 || state.viewedRecords.includes(record.id));
-  const candidate = available
-    .map((record) => ({ title: record.title, distance: levenshtein(normalize(input), normalize(record.title)) }))
-    .sort((a, b) => a.distance - b.distance)[0];
-  return candidate && candidate.distance > 0 && candidate.distance <= 2 ? candidate.title : null;
-}
-
 function searchHint(state) {
   const eligible = hints.hintStages
     .filter((stage) => stage.requiresViewed.every((id) => state.viewedRecords.includes(id)))
@@ -191,10 +172,7 @@ export function search(rawInput, state) {
       if (names.length > 1) return { result: response("MULTIPLE_MATCHES", `MULTIPLE MATCHES\n\n「御影」に一致する記録が複数あります。\n\n${names.join("\n")}\n\n対象を特定してください。`), state, events: [] };
     }
     record = findSingle(audio ?? input, state);
-    if (!record) {
-      const candidate = suggestion(input, state);
-      return { result: candidate ? response("NO_EXACT_MATCH", `NO EXACT MATCH\n\n「${candidate}」のことですか？`, { suggestion: candidate }) : response("NOT_FOUND", messages.notFound), state, events: [] };
-    }
+    if (!record) return { result: response("NOT_FOUND", messages.notFound), state, events: [] };
   }
 
   if (!featureAvailable(record, state) || !requirementsMet(record, state)) {

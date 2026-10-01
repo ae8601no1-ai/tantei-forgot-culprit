@@ -1,7 +1,7 @@
 {
   "formatError": "QUERY FORMAT ERROR\n\n複数の検索語を検出しました。\n\nCROSS SEARCHでは、検索語の間に\n全角スペースを使用してください。",
   "recordLocked": "RECORD LOCKED\n\n該当する記録を検出しました。\n\nただし、現在の調査情報では\nアクセス条件を満たしていません。",
-  "notFound": "NO RECORD\n\n該当する記録はありません。",
+  "notFound": "NO RECORD\n\n該当する記録は見つかりませんでした。\n\n検索語を変更してください。",
   "noRelated": "CROSS SEARCH COMPLETE\n\n指定された記録を直接関連付ける資料は\n確認できませんでした。",
   "noAdvancedRelated": "ADVANCED CROSS SEARCH COMPLETE\n\n三つの記録を同時に関連付ける資料は\n確認できませんでした。",
   "naturalLanguage": "QUERY NOT RECOGNIZED\n\n自然文検索には対応していません。\n\n人物名、場所、資料名、日付、\n音声記録IDなどの検索キーを入力してください。",

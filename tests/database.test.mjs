@@ -72,3 +72,11 @@ test("正式stateをすべて保持", () => { for (const key of ["viewedRecords"
 test("導入は予約送信メールから認証へ進む", () => { assert.match(appSource, /2026年9月2日　21:51/); assert.match(appSource, /調査記録の確認依頼/); assert.match(appSource, /調査記録へアクセス/); });
 test("認証コードと失敗表示を実装", () => { assert.match(appSource, /AUTH_CODE = "KN-2026-08"/); assert.match(appSource, /AUTHENTICATION FAILED/); assert.match(appSource, /AUTHENTICATION ACCEPTED/); });
 test("開始ページにGAME STARTを表示しない", () => { assert.match(appSource, /title: "RECOVERED CASE FILE"/); assert.doesNotMatch(appSource, /<h1>GAME START<\/h1>/); });
+test("不正確な検索語から候補を提示しない", () => {
+  const result = search("桟ばし", unlocked).result;
+  assert.equal(result.status, "NOT_FOUND");
+  assert.match(result.body, /該当する記録は見つかりませんでした/);
+  assert.match(result.body, /検索語を変更してください/);
+  assert.equal("suggestion" in result, false);
+  assert.doesNotMatch(result.body, /ですか？/);
+});
