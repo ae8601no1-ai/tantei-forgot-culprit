@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { createRoot } from "react-dom/client";
-import { AlertTriangle, ArrowLeft, Database, FileAudio, RotateCcw, Search as SearchIcon, ShieldCheck, Terminal } from "lucide-react";
+import { AlertTriangle, ArrowLeft, Database, FileAudio, KeyRound, Mail, RotateCcw, Search as SearchIcon, ShieldCheck, Terminal } from "lucide-react";
 import canonical from "./data/canonical-script.json" with { type: "json" };
 import recordMedia from "./data/record-media.json" with { type: "json" };
 import { completeGame, completeUnsavedAudio01, completeUnsavedAudio02, initialState, search } from "./lib/engine.js";
@@ -8,6 +8,8 @@ import "./styles.css";
 import "./additions.css";
 
 const SAVE_KEY = "kuze-private-investigation-db-final-63";
+const AUTH_KEY = "kuze-private-investigation-db-authorized";
+const AUTH_CODE = "KN-2026-08";
 const DATA_VERSION = "FINAL-63-UNSAVED-AUDIO-2026-09-30";
 const recordContent = Object.fromEntries(canonical.records.map((record) => [record.id, record]));
 const databaseAnalysisEvent = {
@@ -49,12 +51,19 @@ function App() {
   const [state, setState] = useState(initialState);
   const [ready, setReady] = useState(false);
   const [query, setQuery] = useState("");
-  const [result, setResult] = useState({ status: "START", title: "GAME START", body: canonical.gameStart.body });
+  const [result, setResult] = useState({ status: "START", title: "RECOVERED CASE FILE", body: canonical.gameStart.body });
   const [eventQueue, setEventQueue] = useState([]);
   const [view, setView] = useState("database");
   const [expandedMedia, setExpandedMedia] = useState(null);
+  const [accessStage, setAccessStage] = useState("loading");
+  const [authCode, setAuthCode] = useState("");
+  const [authError, setAuthError] = useState(false);
 
-  useEffect(() => { setState(loadState()); setReady(true); }, []);
+  useEffect(() => {
+    setState(loadState());
+    setAccessStage(localStorage.getItem(AUTH_KEY) === "accepted" ? "database" : "mail");
+    setReady(true);
+  }, []);
   useEffect(() => { if (ready) localStorage.setItem(SAVE_KEY, JSON.stringify(state)); }, [ready, state]);
 
   const currentRecord = result.recordId ? recordContent[result.recordId] : null;
@@ -73,7 +82,7 @@ function App() {
   }
 
   function goTop() {
-    setResult({ status: "START", title: "GAME START", body: canonical.gameStart.body });
+    setResult({ status: "START", title: "RECOVERED CASE FILE", body: canonical.gameStart.body });
     setEventQueue([]);
     setView("database");
     window.scrollTo({ top: 0, behavior: "auto" });
@@ -83,12 +92,74 @@ function App() {
     if (!window.confirm("保存された調査記録を消去しますか？")) return;
     localStorage.removeItem(SAVE_KEY);
     setState(initialState);
-    setResult({ status: "START", title: "GAME START", body: canonical.gameStart.body });
+    setResult({ status: "START", title: "RECOVERED CASE FILE", body: canonical.gameStart.body });
     setView("database");
     setEventQueue([]);
   }
 
   if (!ready) return <main className="loading">DATABASE RECOVERY...</main>;
+
+  if (accessStage === "mail") return <main className="access-shell">
+    <div className="access-noise" aria-hidden="true" />
+    <section className="mail-window">
+      <div className="mail-toolbar"><Mail /><span>SECURE MAIL / RECEIVED</span></div>
+      <dl className="mail-meta">
+        <div><dt>送信日時</dt><dd>2026年9月2日　21:51</dd></div>
+        <div><dt>差出人</dt><dd>久世冬真</dd></div>
+        <div><dt>件名</dt><dd>調査記録の確認依頼</dd></div>
+      </dl>
+      <div className="mail-body">
+        <p>このメールは、指定した時刻に自動送信されるよう設定しています。</p>
+        <p>私は今、黒凪島である事件を調査しています。</p>
+        <p>調査はほぼ終わりました。<br />ただ、最終報告書を作成する前に、確認しておきたいことがあります。</p>
+        <p>万が一、私が報告できない状態になった場合、残された調査記録を確認してください。</p>
+        <p>記録は専用データベースに保存されています。<br />認証コードは、この依頼を受け取った方へ別の方法でお渡ししています。</p>
+        <p>データベースに残されたすべての情報を照合し、私が何を突き止めたのか確認してください。</p>
+        <p>私の記憶ではなく、記録を信じてください。</p>
+        <p className="mail-signature">久世冬真</p>
+      </div>
+      <button className="access-primary" onClick={() => { setAccessStage("auth"); window.scrollTo(0, 0); }}>調査記録へアクセス</button>
+    </section>
+    <footer><span>このページはARG用です。全ての個人名。地名はフィクションです。</span><span>GOTO ARG LAB｜体験型ミステリー</span></footer>
+  </main>;
+
+  if (accessStage === "auth") return <main className="access-shell">
+    <div className="access-noise" aria-hidden="true" />
+    <section className="auth-window">
+      <KeyRound />
+      <span className="auth-kicker">KUZE PRIVATE INVESTIGATION DATABASE</span>
+      <h1>RESTRICTED ACCESS</h1>
+      <p>このデータベースには、未解決事件に関する<br />人物情報、音声記録、現場資料が保存されています。</p>
+      <form onSubmit={(event) => {
+        event.preventDefault();
+        if (authCode.trim().toUpperCase() === AUTH_CODE) {
+          setAuthError(false);
+          setAccessStage("recovery");
+        } else {
+          setAuthError(true);
+        }
+      }}>
+        <label htmlFor="authorization-code">AUTHORIZATION CODE</label>
+        <input id="authorization-code" value={authCode} onChange={(event) => { setAuthCode(event.target.value); setAuthError(false); }} autoComplete="off" spellCheck={false} autoFocus />
+        {authError && <p className="auth-error" role="alert">AUTHENTICATION FAILED<br /><small>認証コードを確認してください。</small></p>}
+        <button className="access-primary" type="submit">認証する</button>
+      </form>
+      <button className="access-secondary" onClick={() => { setAccessStage("mail"); setAuthError(false); }}>メールへ戻る</button>
+    </section>
+    <footer><span>このページはARG用です。全ての個人名。地名はフィクションです。</span><span>GOTO ARG LAB｜体験型ミステリー</span></footer>
+  </main>;
+
+  if (accessStage === "recovery") return <main className="access-shell">
+    <div className="access-noise" aria-hidden="true" />
+    <section className="recovery-window">
+      <ShieldCheck />
+      <span>AUTHENTICATION ACCEPTED</span>
+      <h1>CASE ID：KN-2026-08</h1>
+      <div className="recovery-log"><p>調査記録を復旧しています。</p><p>……</p><p>DATABASE ONLINE</p></div>
+      <button className="access-primary" onClick={() => { localStorage.setItem(AUTH_KEY, "accepted"); setAccessStage("database"); window.scrollTo(0, 0); }}>復旧された記録を開く</button>
+    </section>
+    <footer><span>このページはARG用です。全ての個人名。地名はフィクションです。</span><span>GOTO ARG LAB｜体験型ミステリー</span></footer>
+  </main>;
 
   return <main className="app-shell">
     <div className="scanlines" aria-hidden="true" />
@@ -172,7 +243,7 @@ function App() {
       <img src={expandedMedia.src} alt={expandedMedia.alt} onClick={(event) => event.stopPropagation()} />
     </div>}
 
-    {view === "ending" && <div className="ending-screen"><button className="return-db" onClick={goTop}>DATABASEへ戻る</button><section><h1>CASE RECONSTRUCTION</h1><RichText text={canonical.ending.caseReconstruction.body} /></section><section><h1>GAME START</h1><RichText text={canonical.ending.gameStartReprise.body} /></section><section className="reconstruction-meter"><h1>RECONSTRUCTION COMPLETE</h1><RichText text={canonical.ending.reconstructionComplete.body} /></section><section><h1>PERSONAL NOTE</h1><RichText text={canonical.ending.personalNote.body} /></section><section className="final-card"><RichText text={canonical.ending.finalCard.body} /></section></div>}
+    {view === "ending" && <div className="ending-screen"><button className="return-db" onClick={goTop}>DATABASEへ戻る</button><section><h1>CASE RECONSTRUCTION</h1><RichText text={canonical.ending.caseReconstruction.body} /></section><section><h1>RECOVERED CASE FILE</h1><RichText text={canonical.ending.gameStartReprise.body} /></section><section className="reconstruction-meter"><h1>RECONSTRUCTION COMPLETE</h1><RichText text={canonical.ending.reconstructionComplete.body} /></section><section><h1>PERSONAL NOTE</h1><RichText text={canonical.ending.personalNote.body} /></section><section className="final-card"><RichText text={canonical.ending.finalCard.body} /></section></div>}
 
     <footer><span>このページはARG用です。全ての個人名。地名はフィクションです。</span><span>GOTO ARG LAB｜体験型ミステリー</span></footer>
   </main>;
