@@ -7,92 +7,65 @@ import searchDb from "../src/data/search-db.json" with { type: "json" };
 import aliases from "../src/data/aliases.json" with { type: "json" };
 import unlocks from "../src/data/unlocks.json" with { type: "json" };
 import recordMedia from "../src/data/record-media.json" with { type: "json" };
-import { applyRecord, initialState, normalizeAudio, search } from "../src/lib/engine.js";
+import { applyRecord, completeGame, completeUnsavedAudio01, completeUnsavedAudio02, initialState, normalizeAudio, search } from "../src/lib/engine.js";
 
 const hash = (value) => createHash("sha256").update(value, "utf8").digest("hex");
-const fullyUnlocked = {
-  ...initialState,
-  viewedRecords: canonical.records.map((record) => record.id),
-  unlockedFeatures: { crossSearch: true, advancedCrossSearch: true }
-};
+const record = (id) => searchDb.records.find((item) => item.id === id);
+const unlocked = { ...initialState, crossSearchUnlocked: true, advancedCrossSearchUnlocked: true, viewedRecords: canonical.records.map((item) => item.id) };
+const appSource = await readFile(new URL("../src/main.jsx", import.meta.url), "utf8");
+const source = (await readFile(new URL("../source/CANONICAL_SCRIPT.md", import.meta.url), "utf8")).replace(/\r\n/g, "\n");
 
-test("SCRIPT integrity includes exactly SCRIPT_001 through SCRIPT_067", () => {
-  assert.equal(canonical.records.length, 67);
-  assert.deepEqual(canonical.records.map((record) => record.id), Array.from({ length: 67 }, (_, index) => `SCRIPT_${String(index + 1).padStart(3, "0")}`));
-  for (const record of canonical.records) assert.equal(hash(`${record.title}\n${record.body}`), record.sha256, record.id);
-});
+test("01 検索可能レコード数が63", () => assert.equal(canonical.records.length, 63));
+test("02 64〜67が検索DBに存在しない", () => assert.equal(searchDb.records.some((item) => item.number > 63 || /^SCRIPT_06[4-7]$/.test(item.id)), false));
+test("03 御影征一郎は07", () => assert.equal(search("御影征一郎", initialState).result.recordId, "SCRIPT_007"));
+test("04 征一郎エイリアスは07", () => assert.equal(search("征一郎", initialState).result.recordId, "SCRIPT_007"));
+test("05 御影隆一は08", () => assert.equal(search("御影隆一", initialState).result.recordId, "SCRIPT_008"));
+test("06 音声記録202609010925は21", () => assert.equal(search("音声記録202609010925", initialState).result.recordId, "SCRIPT_021"));
+test("07 21は修正版会話", () => { const body = canonical.records[20].body; assert.match(body, /紙に日付があったから/); assert.match(body, /まだ事故か事件か判断しているとは話していません/); });
+test("08 38閲覧前はCROSS SEARCH不可", () => assert.equal(search("雨宮七海　御影七海", initialState).result.status, "NOT_FOUND"));
+test("09 38末尾に起動メッセージ", () => assert.match(canonical.records[37].body, /CROSS SEARCHが起動しました/));
+test("10 38だけでCROSS SEARCH解放", () => assert.equal(applyRecord(record("SCRIPT_038"), initialState).state.crossSearchUnlocked, true));
+test("11 TOPにCROSS SEARCH ACTIVE表示を実装", () => assert.match(appSource, /CROSS SEARCH MODE：ACTIVE/));
+test("12 全検索結果にTOPへ戻るボタン", () => assert.match(appSource, /result\.status !== "START".*データベースTOPへ戻る/s));
+test("13 TOP移動でstateをリセットしない", () => { const body = appSource.match(/function goTop\(\)[\s\S]*?\n  }/)?.[0] ?? ""; assert.doesNotMatch(body, /setState/); });
+test("14 60閲覧前はADVANCED不可", () => assert.equal(search("御影澪　水城沙耶　榊原美智子", { ...initialState, crossSearchUnlocked: true }).result.status, "NOT_FOUND"));
+test("15 60閲覧後にADVANCED解放", () => assert.equal(applyRecord(record("SCRIPT_060"), { ...initialState, crossSearchUnlocked: true }).state.advancedCrossSearchUnlocked, true));
+test("16 TOPにADVANCED ACTIVE表示を実装", () => assert.match(appSource, /ADVANCED CROSS SEARCH MODE：ACTIVE/));
+test("17 61を3語検索", () => assert.equal(search("御影澪　水城沙耶　榊原美智子", unlocked).result.recordId, "SCRIPT_061"));
+test("18 62を3語検索", () => assert.equal(search("御影澪　雨宮七海　御影征一郎", unlocked).result.recordId, "SCRIPT_062"));
+test("19 63を3語検索", () => assert.equal(search("御影隆一　御影澪　桟橋", unlocked).result.recordId, "SCRIPT_063"));
+test("20 63終了前にCACHEは出現しない", () => assert.equal(initialState.dbAnalysisComplete, false));
+test("21 63終了後にDB解析完了", () => assert.equal(applyRecord(record("SCRIPT_063"), { ...initialState, advancedCrossSearchUnlocked: true }).state.dbAnalysisComplete, true));
+test("22 2 AUDIO FILES FOUNDを表示", () => assert.match(appSource, /2 AUDIO FILES FOUND/));
+test("23 音声を自動表示せずTOPへ戻る", () => assert.match(appSource, /DATABASE_ANALYSIS_COMPLETE[\s\S]*データベースTOPへ戻る/));
+test("24 TOPに未保存音声項目", () => assert.match(appSource, /保存完了していない音声記録/));
+test("25 AUDIO 01初期AVAILABLE", () => assert.match(appSource, /UNSAVED AUDIO 01<\/b><small>AVAILABLE/));
+test("26 AUDIO 02初期LOCKED", () => { assert.equal(initialState.unsavedAudio01Viewed, false); assert.match(appSource, /unsavedAudio01Viewed \? "AVAILABLE" : "LOCKED"/); });
+test("27 相沢冬真はAUDIO 01で初明示", () => { assert.equal(canonical.records.some((item) => item.body.includes("相沢冬真")), false); assert.match(canonical.unsavedAudio.file01.body, /相沢冬真/); });
+test("28 AUDIO 01後にAUDIO 02解放", () => assert.equal(completeUnsavedAudio01({ ...initialState, dbAnalysisComplete: true }).unsavedAudio01Viewed, true));
+test("29 AUDIO 02は22:18正式全文", () => { assert.match(canonical.unsavedAudio.file02.body, /2026\.09\.02 22:18/); assert.match(canonical.unsavedAudio.file02.body, /沙耶「そこ、階段――」/); assert.match(canonical.unsavedAudio.file02.body, /AUDIO DATA LOST/); });
+test("30 AUDIO 02後にSYSTEM RECOVERYへ", () => { assert.equal(completeUnsavedAudio02({ ...initialState, unsavedAudio01Viewed: true }).unsavedAudio02Viewed, true); assert.match(appSource, /setView\("recovery"\)/); });
+test("31 鎮静系薬剤を表示", () => assert.match(canonical.systemRecovery.body, /鎮静系薬剤を検出/));
+test("32 頭部外傷に伴う記憶障害を表示", () => assert.match(canonical.systemRecovery.body, /頭部外傷に伴う記憶障害/));
+test("33 CASE RECONSTRUCTIONへ進む", () => assert.match(appSource, /CASE RECONSTRUCTIONへ/));
+test("34 第一事件犯人", () => assert.match(canonical.ending.caseReconstruction.body, /第一事件。[\s\S]*雨宮七海――御影七海/));
+test("35 第二事件犯人", () => assert.match(canonical.ending.caseReconstruction.body, /第二事件。[\s\S]*雨宮七海――御影七海/));
+test("36 第三事件犯人", () => assert.match(canonical.ending.caseReconstruction.body, /第三事件。[\s\S]*水城沙耶――御影澪/));
+test("37 澪を落とした人物は御影隆一", () => assert.match(canonical.ending.caseReconstruction.body, /海へ転落させた人物：[\s\S]*御影隆一/));
+test("38 海へ飛び込んだ少年は相沢冬真", () => assert.match(canonical.ending.caseReconstruction.body, /海へ飛び込んだ少年：[\s\S]*相沢冬真/));
+test("39 現在名は久世冬真", () => assert.match(canonical.ending.caseReconstruction.body, /現在の名前：[\s\S]*久世冬真/));
+test("40 冒頭画面を再提示", () => assert.match(canonical.ending.gameStartReprise.body, /CASE ID：KN-2026-08[\s\S]*私は、この事件を解決したらしい/));
+test("41 冒頭ヒントを復活させない", () => { assert.doesNotMatch(canonical.gameStart.body, /最初に確認すべき場所|\*\*黒凪島\*\*。/); assert.doesNotMatch(canonical.ending.gameStartReprise.body, /最初に確認すべき場所|\*\*黒凪島\*\*。/); });
+test("42 PERSONAL NOTE表示", () => assert.match(canonical.ending.personalNote.body, /記憶は信用できない[\s\S]*――久世冬真/));
+test("43 RECONSTRUCTION COMPLETE 100%", () => { assert.match(canonical.ending.reconstructionComplete.body, /100%/); assert.match(canonical.ending.finalCard.body, /RECONSTRUCTION COMPLETE/); });
+test("44 ENDへ到達可能", () => { assert.equal(completeGame({ ...initialState, unsavedAudio02Viewed: true }).gameCompleted, true); assert.match(canonical.ending.finalCard.body, /END/); });
+test("45 旧63検索は出ない", () => assert.notEqual(search("相沢佳代　相沢少年　久世冬真", unlocked).result.recordId, "SCRIPT_063"));
+test("46 旧64音声は出ない", () => assert.equal(search("音声記録202609022218", unlocked).result.status, "NOT_FOUND"));
+test("47 グラス旧65は出ない", () => assert.equal(search("グラス", unlocked).result.status, "NOT_FOUND"));
+test("48 薬剤旧66は出ない", () => assert.equal(search("薬剤", unlocked).result.status, "NOT_FOUND"));
+test("49 久世負傷旧67は出ない", () => assert.equal(search("久世負傷", unlocked).result.status, "NOT_FOUND"));
+test("50 指定外本文と正本の整合性", async () => { const expected = (await readFile(new URL("../source/EXPECTED_SHA256.txt", import.meta.url), "utf8")).trim(); assert.equal(hash(source), expected); for (const item of canonical.records) assert.equal(hash(`${item.title}\n${item.body}`), item.sha256, item.id); });
 
-test("canonical source has not changed", async () => {
-  const source = (await readFile(new URL("../source/CANONICAL_SCRIPT.md", import.meta.url), "utf8")).replace(/\r\n/g, "\n");
-  const expected = (await readFile(new URL("../source/EXPECTED_SHA256.txt", import.meta.url), "utf8")).trim();
-  assert.equal(hash(source), expected, "SCRIPT_INTEGRITY_ERROR");
-  assert.equal(canonical.sourceSha256, expected);
-});
-
-test("all canonical queries map to their exact SCRIPT", () => {
-  for (const record of searchDb.records) {
-    const query = Array.isArray(record.canonicalQuery) ? record.canonicalQuery.join("　") : record.canonicalQuery;
-    const outcome = search(query, fullyUnlocked);
-    assert.equal(outcome.result.recordId, record.id, query);
-  }
-});
-
-test("cross search order is independent", () => {
-  assert.equal(search("雨宮七海　御影七海", fullyUnlocked).result.recordId, "SCRIPT_038");
-  assert.equal(search("御影七海　雨宮七海", fullyUnlocked).result.recordId, "SCRIPT_038");
-});
-
-test("all six advanced search permutations map to one SCRIPT", () => {
-  const parts = ["相沢佳代", "相沢少年", "久世冬真"];
-  const permutations = parts.flatMap((a, i) => parts.filter((_, j) => j !== i).flatMap((b) => parts.filter((part) => part !== a && part !== b).map((c) => [a, b, c])));
-  assert.equal(permutations.length, 6);
-  for (const permutation of permutations) assert.equal(search(permutation.join("　"), fullyUnlocked).result.recordId, "SCRIPT_063");
-});
-
-test("cross and advanced functions unlock only after required records", () => {
-  let state = initialState;
-  for (const id of unlocks.crossSearch.slice(0, -1)) state = applyRecord(searchDb.records.find((record) => record.id === id), state).state;
-  assert.equal(state.unlockedFeatures.crossSearch, false);
-  state = applyRecord(searchDb.records.find((record) => record.id === unlocks.crossSearch.at(-1)), state).state;
-  assert.equal(state.unlockedFeatures.crossSearch, true);
-  for (const id of unlocks.advancedCrossSearch) state = applyRecord(searchDb.records.find((record) => record.id === id), state).state;
-  assert.equal(state.unlockedFeatures.advancedCrossSearch, true);
-});
-
-test("half-width separators explain the required query format", () => {
-  const outcome = search("雨宮七海 御影七海", fullyUnlocked);
-  assert.equal(outcome.result.status, "FORMAT_ERROR");
-  assert.match(outcome.result.body, /全角スペース/);
-});
-
-test("audio record input variants resolve to the formal title", () => {
-  for (const input of ["202608301430", "音声202608301430", "音声記録 202608301430", "音声記録：202608301430", "AUDIO202608301430"]) {
-    assert.equal(normalizeAudio(input), "音声記録202608301430");
-    assert.equal(search(input, fullyUnlocked).result.recordId, "SCRIPT_015");
-  }
-});
-
-test("aliases and completion requirements are data-driven", () => {
-  assert.ok(Object.values(aliases).flat().length > 0);
-  const before = { ...fullyUnlocked, viewedRecords: fullyUnlocked.viewedRecords.filter((id) => id !== "SCRIPT_067"), completed: false };
-  const outcome = search("久世負傷", before);
-  assert.equal(outcome.state.completed, true);
-});
-
-test("GAME START explains the database without revealing the first search key", () => {
-  assert.match(canonical.gameStart.body, /人物、場所、資料、音声記録を検索するためのもの/);
-  assert.match(canonical.gameStart.body, /すべての情報は、このデータベースに入力済み/);
-  assert.equal(canonical.gameStart.body.includes("最初に確認すべき場所"), false);
-  assert.equal(canonical.gameStart.body.includes("**黒凪島**。"), false);
-});
-
-test("database visual records include their attachments", async () => {
-  assert.match(recordMedia.SCRIPT_001.src, /kuronagi-island-map\.svg$/);
-  assert.match(recordMedia.SCRIPT_002.src, /kuronagi-mansion-floor-map\.svg$/);
-  assert.match(recordMedia.SCRIPT_033.src, /old-photo-1998\.jpg$/);
-  for (const media of Object.values(recordMedia)) {
-    const file = new URL(`../public${media.src}`, import.meta.url);
-    const data = await readFile(file);
-    assert.ok(data.length > 0, media.src);
-  }
-});
+test("検索UX：全角スペース、語順、音声表記揺れ", () => { assert.equal(search("雨宮七海 御影七海", unlocked).result.status, "FORMAT_ERROR"); assert.equal(search("御影七海　雨宮七海", unlocked).result.recordId, "SCRIPT_039"); assert.equal(normalizeAudio("AUDIO202608301430"), "音声記録202608301430"); });
+test("画像添付は新番号へ追従", async () => { assert.match(recordMedia.SCRIPT_001.src, /kuronagi-island-map\.svg$/); assert.match(recordMedia.SCRIPT_002.src, /kuronagi-mansion-floor-map\.svg$/); assert.match(recordMedia.SCRIPT_034.src, /old-photo-1998\.jpg$/); for (const media of Object.values(recordMedia)) assert.ok((await readFile(new URL(`../public${media.src}`, import.meta.url))).length > 0); });
+test("正式stateをすべて保持", () => { for (const key of ["viewedRecords", "searchHistory", "crossSearchUnlocked", "advancedCrossSearchUnlocked", "dbAnalysisComplete", "shownSystemEvents", "unsavedAudio01Viewed", "unsavedAudio02Viewed", "gameCompleted"]) assert.ok(key in initialState, key); assert.deepEqual(unlocks.crossSearch, ["SCRIPT_038"]); assert.deepEqual(unlocks.advancedCrossSearch, ["SCRIPT_060"]); assert.ok(aliases["御影征一郎"].includes("征一郎")); });

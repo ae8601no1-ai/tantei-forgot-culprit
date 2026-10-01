@@ -99,6 +99,130 @@ footer {
   cursor: pointer;
 }
 
+.mode-status {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.mode-status span {
+  border: 1px solid #3f5a4c;
+  background: #101b16;
+  color: #9fc2ae;
+  padding: 7px 10px;
+  font-size: 9px;
+  letter-spacing: .13em;
+}
+
+.unsaved-alert {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  margin-bottom: 18px;
+  padding: 17px;
+  border: 1px solid #88723e;
+  background: #1a160b;
+  color: #d5c384;
+  text-align: left;
+  cursor: pointer;
+}
+
+.unsaved-alert svg { width: 23px; }
+.unsaved-alert span { display: grid; gap: 4px; }
+.unsaved-alert b { font-size: 13px; }
+.unsaved-alert small { color: #94865d; font-size: 9px; letter-spacing: .16em; }
+
+.back-top,
+.advance-special {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  margin-top: 34px;
+  padding: 13px;
+  border: 1px solid #46554d;
+  background: #101613;
+  color: #b8c5be;
+  cursor: pointer;
+}
+
+.back-top svg { width: 15px; }
+
+.special-screen {
+  width: min(820px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 64px 4px 120px;
+}
+
+.special-screen > h1 {
+  margin: 12px 0 38px;
+  border-block: 1px solid #344039;
+  padding: 22px 0;
+  color: #dce3df;
+  font-size: 25px;
+  font-weight: 500;
+  letter-spacing: .08em;
+}
+
+.special-kicker {
+  color: #718078;
+  font-size: 10px;
+  letter-spacing: .18em;
+}
+
+.audio-files {
+  display: grid;
+  gap: 12px;
+  margin-top: 34px;
+}
+
+.audio-files button {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px;
+  border: 1px solid #405148;
+  background: #0d1411;
+  color: #c4d2ca;
+  text-align: left;
+  cursor: pointer;
+}
+
+.audio-files button:disabled {
+  border-color: #292f2c;
+  color: #555e59;
+  cursor: not-allowed;
+}
+
+.audio-files button svg { width: 22px; }
+.audio-files button span { display: grid; gap: 5px; }
+.audio-files button small { color: #789484; font-size: 9px; letter-spacing: .16em; }
+.audio-files button:disabled small { color: #555e59; }
+
+.audio-record-screen .rich-text {
+  border-left: 2px solid #33483d;
+  padding-left: 24px;
+}
+
+.advance-special {
+  border-color: #647b6e;
+  background: #18231d;
+  color: #d6e0da;
+}
+
+.reconstruction-meter {
+  text-align: center;
+}
+
+.reconstruction-meter .rich-text {
+  color: #bdd2c6;
+  font-family: "SFMono-Regular","Yu Gothic",monospace;
+  font-size: 28px;
+}
+
 @media (max-width: 760px) {
   .status b {
     font-size: 8px;
@@ -107,4 +231,8 @@ footer {
   footer {
     padding-inline: 14px;
   }
+
+  .special-screen { padding-top: 36px; }
+  .special-screen > h1 { font-size: 21px; }
+  .audio-record-screen .rich-text { padding-left: 14px; }
 }

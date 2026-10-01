@@ -5,13 +5,18 @@ import messages from "../data/system-messages.json" with { type: "json" };
 import hints from "../data/hints.json" with { type: "json" };
 
 export const initialState = {
+  dataVersion: "FINAL-63-UNSAVED-AUDIO-2026-09-30",
   viewedRecords: [],
-  unlockedFeatures: { crossSearch: false, advancedCrossSearch: false },
+  crossSearchUnlocked: false,
+  advancedCrossSearchUnlocked: false,
+  dbAnalysisComplete: false,
   shownSystemEvents: [],
+  unsavedAudio01Viewed: false,
+  unsavedAudio02Viewed: false,
+  gameCompleted: false,
   hintLevels: {},
   searchHistory: [],
-  progress: 0,
-  completed: false
+  progress: 0
 };
 
 export function normalize(value) {
@@ -30,6 +35,7 @@ const singleRecords = records.filter((record) => record.type === "single");
 const multiRecords = records.filter((record) => record.type !== "single");
 const allCanonicalTerms = new Set(records.flatMap((record) => Array.isArray(record.canonicalQuery) ? record.canonicalQuery : [record.canonicalQuery]));
 const restrictedAliasTargets = new Set(["御影澪", "御影七海", "相沢少年"]);
+const retiredSearchKeys = new Set(["音声記録202609022218", "グラス", "薬剤", "久世負傷"]);
 
 function queryKey(parts) {
   return parts.map(normalize).sort().join("|");
@@ -58,8 +64,8 @@ export function resolveTerm(input, state) {
 
 function featureAvailable(record, state) {
   if (record.phase === 1) return true;
-  if (record.phase === 2) return state.unlockedFeatures.crossSearch;
-  return state.unlockedFeatures.advancedCrossSearch;
+  if (record.phase === 2) return state.crossSearchUnlocked;
+  return state.advancedCrossSearchUnlocked;
 }
 
 function requirementsMet(record, state) {
@@ -103,33 +109,41 @@ function searchHint(state) {
 export function applyRecord(record, state) {
   const viewedRecords = [...new Set([...state.viewedRecords, record.id])];
   const shownSystemEvents = [...state.shownSystemEvents];
-  const unlockedFeatures = { ...state.unlockedFeatures };
+  let crossSearchUnlocked = state.crossSearchUnlocked;
+  let advancedCrossSearchUnlocked = state.advancedCrossSearchUnlocked;
+  let dbAnalysisComplete = state.dbAnalysisComplete;
   const events = [];
 
-  if (!unlockedFeatures.crossSearch && unlocks.crossSearch.every((id) => viewedRecords.includes(id))) {
-    unlockedFeatures.crossSearch = true;
+  if (!crossSearchUnlocked && unlocks.crossSearch.every((id) => viewedRecords.includes(id))) {
+    crossSearchUnlocked = true;
     if (!shownSystemEvents.includes("CROSS_SEARCH_RECOVERED")) {
       shownSystemEvents.push("CROSS_SEARCH_RECOVERED");
       events.push("CROSS_SEARCH_RECOVERED");
     }
   }
-  if (!unlockedFeatures.advancedCrossSearch && unlocks.advancedCrossSearch.every((id) => viewedRecords.includes(id))) {
-    unlockedFeatures.advancedCrossSearch = true;
+  if (!advancedCrossSearchUnlocked && unlocks.advancedCrossSearch.every((id) => viewedRecords.includes(id))) {
+    advancedCrossSearchUnlocked = true;
     if (!shownSystemEvents.includes("ADVANCED_CROSS_SEARCH_RECOVERED")) {
       shownSystemEvents.push("ADVANCED_CROSS_SEARCH_RECOVERED");
       events.push("ADVANCED_CROSS_SEARCH_RECOVERED");
     }
   }
-
-  const completed = state.completed || (record.id === "SCRIPT_067" && unlocks.clearRequired.every((id) => viewedRecords.includes(id)));
+  if (!dbAnalysisComplete && record.id === "SCRIPT_063" && unlocks.clearRequired.every((id) => viewedRecords.includes(id))) {
+    dbAnalysisComplete = true;
+    if (!shownSystemEvents.includes("DATABASE_ANALYSIS_COMPLETE")) {
+      shownSystemEvents.push("DATABASE_ANALYSIS_COMPLETE");
+      events.push("DATABASE_ANALYSIS_COMPLETE");
+    }
+  }
   return {
     state: {
       ...state,
       viewedRecords,
-      unlockedFeatures,
+      crossSearchUnlocked,
+      advancedCrossSearchUnlocked,
+      dbAnalysisComplete,
       shownSystemEvents,
-      progress: viewedRecords.length,
-      completed
+      progress: viewedRecords.length
     },
     events
   };
@@ -144,6 +158,7 @@ function findSingle(input, state) {
 export function search(rawInput, state) {
   const input = rawInput.trim();
   if (!input) return { result: response("NOT_FOUND", messages.notFound), state, events: [] };
+  if (retiredSearchKeys.has(normalizeAudio(input) ?? input)) return { result: response("NOT_FOUND", messages.notFound), state, events: [] };
   if (normalize(input) === normalize("調査メモ")) return { ...searchHint(state), events: [] };
   if (normalize(input) === normalize("犯人")) return { result: response("NOT_FOUND", messages.culprit), state, events: [] };
   if (normalize(input) === normalize("答え")) return { result: response("NOT_FOUND", messages.answer), state, events: [] };
@@ -158,8 +173,8 @@ export function search(rawInput, state) {
   let record = null;
   if (hasFullWidthSeparator) {
     const rawParts = input.split(/　+/).map((part) => part.trim()).filter(Boolean);
-    if (rawParts.length === 2 && !state.unlockedFeatures.crossSearch) return { result: response("NOT_FOUND", messages.notFound), state, events: [] };
-    if (rawParts.length === 3 && !state.unlockedFeatures.advancedCrossSearch) return { result: response("NOT_FOUND", messages.notFound), state, events: [] };
+    if (rawParts.length === 2 && !state.crossSearchUnlocked) return { result: response("NOT_FOUND", messages.notFound), state, events: [] };
+    if (rawParts.length === 3 && !state.advancedCrossSearchUnlocked) return { result: response("NOT_FOUND", messages.notFound), state, events: [] };
     const parts = rawParts.map((part) => resolveTerm(part, state));
     if (parts.some((part) => !part)) return { result: response("NOT_FOUND", messages.notFound), state, events: [] };
     if (rawParts.length === 2 && queryKey(parts) === queryKey(["久世冬真", "御影澪"])) {
@@ -197,4 +212,19 @@ export function search(rawInput, state) {
 
 export function recordById(id) {
   return byId[id] ?? null;
+}
+
+export function completeUnsavedAudio01(state) {
+  if (!state.dbAnalysisComplete) return state;
+  return { ...state, unsavedAudio01Viewed: true };
+}
+
+export function completeUnsavedAudio02(state) {
+  if (!state.unsavedAudio01Viewed) return state;
+  return { ...state, unsavedAudio02Viewed: true };
+}
+
+export function completeGame(state) {
+  if (!state.unsavedAudio02Viewed) return state;
+  return { ...state, gameCompleted: true };
 }

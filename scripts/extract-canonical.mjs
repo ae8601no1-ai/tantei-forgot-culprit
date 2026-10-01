@@ -14,7 +14,7 @@ if (actualSourceHash !== expectedSourceHash) throw new Error(`SCRIPT_INTEGRITY_E
 
 const recordHeading = /^## (\d{2})｜(.+)$/gm;
 const matches = [...source.matchAll(recordHeading)];
-if (matches.length !== 67) throw new Error(`Expected 67 records, found ${matches.length}`);
+if (matches.length !== 63) throw new Error(`Expected 63 records, found ${matches.length}`);
 
 const boundaries = [...source.matchAll(/^# (?!#).+$/gm)].map((match) => match.index);
 const records = matches.map((match, index) => {
@@ -26,7 +26,7 @@ const records = matches.map((match, index) => {
   const body = clean(source.slice(bodyStart, Math.min(nextRecord, nextSection)).replace(/\n---\s*$/g, ""));
   const query = title.split("　");
   const type = query.length === 3 ? "advanced_cross" : query.length === 2 ? "cross" : "single";
-  const phase = number <= 37 ? 1 : number <= 59 ? 2 : 3;
+  const phase = number <= 38 ? 1 : number <= 60 ? 2 : 3;
   return {
     id: `SCRIPT_${String(number).padStart(3, "0")}`,
     number,
@@ -58,7 +58,13 @@ const systemEvents = [...source.matchAll(/^# SYSTEM EVENT$/gm)].map((match, inde
   const body = clean(source.slice(start, nextPhase));
   return { id: index === 0 ? "CROSS_SEARCH_RECOVERED" : "ADVANCED_CROSS_SEARCH_RECOVERED", body, sha256: hash(body) };
 });
-const caseReconstruction = section("# CASE RECONSTRUCTION", "\n---\n\n# PERSONAL NOTE");
+const unsavedAudioIntro = section("# UNSAVED AUDIO CACHE", "\n---\n\n## UNSAVED AUDIO 01");
+const unsavedAudio01 = section("## UNSAVED AUDIO 01", "\n---\n\n## UNSAVED AUDIO 02");
+const unsavedAudio02 = section("## UNSAVED AUDIO 02", "\n---\n\n# SYSTEM RECOVERY RECORD");
+const systemRecovery = section("# SYSTEM RECOVERY RECORD", "\n---\n\n# CASE RECONSTRUCTION");
+const caseReconstruction = section("# CASE RECONSTRUCTION", "\n---\n\n# GAME START REPRISE");
+const gameStartReprise = section("# GAME START REPRISE", "\n---\n\n# RECONSTRUCTION COMPLETE");
+const reconstructionComplete = section("# RECONSTRUCTION COMPLETE", "\n---\n\n# PERSONAL NOTE");
 const personalStart = source.indexOf("# PERSONAL NOTE");
 const personalEnd = source.indexOf("\n---\n\n**CASE KN-2026-08**", personalStart);
 const personalNote = clean(source.slice(personalStart + "# PERSONAL NOTE".length, personalEnd));
@@ -70,8 +76,16 @@ const canonical = {
   gameStart: { body: gameStart, sha256: hash(gameStart) },
   systemEvents,
   records,
+  unsavedAudio: {
+    intro: { body: unsavedAudioIntro, sha256: hash(unsavedAudioIntro) },
+    file01: { body: unsavedAudio01, sha256: hash(unsavedAudio01) },
+    file02: { body: unsavedAudio02, sha256: hash(unsavedAudio02) }
+  },
+  systemRecovery: { body: systemRecovery, sha256: hash(systemRecovery) },
   ending: {
     caseReconstruction: { body: caseReconstruction, sha256: hash(caseReconstruction) },
+    gameStartReprise: { body: gameStartReprise, sha256: hash(gameStartReprise) },
+    reconstructionComplete: { body: reconstructionComplete, sha256: hash(reconstructionComplete) },
     personalNote: { body: personalNote, sha256: hash(personalNote) },
     finalCard: { body: finalCard, sha256: hash(finalCard) }
   }

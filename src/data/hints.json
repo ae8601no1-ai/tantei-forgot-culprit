@@ -2,7 +2,7 @@
   "hintStages": [
     {
       "id": "hint_01",
-      "requiresViewed": ["SCRIPT_015"],
+      "requiresViewed": ["SCRIPT_016"],
       "priority": 10,
       "levels": [
         "御影隆一の発言には矛盾がある。",

@@ -1,19 +1,24 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { createRoot } from "react-dom/client";
-import { Database, RotateCcw, Search as SearchIcon, ShieldCheck, Terminal } from "lucide-react";
+import { AlertTriangle, ArrowLeft, Database, FileAudio, RotateCcw, Search as SearchIcon, ShieldCheck, Terminal } from "lucide-react";
 import canonical from "./data/canonical-script.json" with { type: "json" };
 import recordMedia from "./data/record-media.json" with { type: "json" };
-import { initialState, search } from "./lib/engine.js";
+import { completeGame, completeUnsavedAudio01, completeUnsavedAudio02, initialState, search } from "./lib/engine.js";
 import "./styles.css";
 import "./additions.css";
 
-const SAVE_KEY = "kuze-private-investigation-db-v1";
+const SAVE_KEY = "kuze-private-investigation-db-final-63";
+const DATA_VERSION = "FINAL-63-UNSAVED-AUDIO-2026-09-30";
 const recordContent = Object.fromEntries(canonical.records.map((record) => [record.id, record]));
+const databaseAnalysisEvent = {
+  id: "DATABASE_ANALYSIS_COMPLETE",
+  body: "DATABASE RECONSTRUCTION\n\n事件関連記録の照合が完了しました。\n\n保存済みデータから復元可能な調査記録を確認しています。\n\n……\n\n……\n\nSEARCHABLE DATABASE：ANALYSIS COMPLETE\n\n保存済み調査データの解析が完了しました。\n\nWARNING\n\nデータベース外に未登録データを検出しました。\n\n一時保存領域を確認しています。\n\n……\n\n2 AUDIO FILES FOUND\n\nデータベースへの保存処理が完了していない音声記録が存在します。"
+};
 
 function loadState() {
   try {
     const saved = JSON.parse(localStorage.getItem(SAVE_KEY));
-    return saved ? { ...initialState, ...saved, unlockedFeatures: { ...initialState.unlockedFeatures, ...saved.unlockedFeatures } } : initialState;
+    return saved?.dataVersion === DATA_VERSION ? { ...initialState, ...saved } : initialState;
   } catch {
     return initialState;
   }
@@ -46,7 +51,7 @@ function App() {
   const [query, setQuery] = useState("");
   const [result, setResult] = useState({ status: "START", title: "GAME START", body: canonical.gameStart.body });
   const [eventQueue, setEventQueue] = useState([]);
-  const [showEnding, setShowEnding] = useState(false);
+  const [view, setView] = useState("database");
   const [expandedMedia, setExpandedMedia] = useState(null);
 
   useEffect(() => { setState(loadState()); setReady(true); }, []);
@@ -54,8 +59,8 @@ function App() {
 
   const currentRecord = result.recordId ? recordContent[result.recordId] : null;
   const currentMedia = currentRecord ? recordMedia[currentRecord.id] : null;
-  const activeEvent = eventQueue[0] ? canonical.systemEvents.find((event) => event.id === eventQueue[0]) : null;
-  const mode = state.unlockedFeatures.advancedCrossSearch ? "ADVANCED CROSS SEARCH" : state.unlockedFeatures.crossSearch ? "CROSS SEARCH" : "SEARCH";
+  const activeEvent = eventQueue[0] ? (canonical.systemEvents.find((event) => event.id === eventQueue[0]) ?? (eventQueue[0] === databaseAnalysisEvent.id ? databaseAnalysisEvent : null)) : null;
+  const mode = state.advancedCrossSearchUnlocked ? "ADVANCED CROSS SEARCH" : state.crossSearchUnlocked ? "CROSS SEARCH" : "SEARCH";
   const history = useMemo(() => state.searchHistory ?? [], [state.searchHistory]);
 
   function runSearch(value = query) {
@@ -64,7 +69,13 @@ function App() {
     setResult(outcome.result);
     setEventQueue(outcome.events ?? []);
     setQuery("");
-    if (outcome.state.completed && !state.completed) setShowEnding(true);
+    window.scrollTo({ top: 0, behavior: "auto" });
+  }
+
+  function goTop() {
+    setResult({ status: "START", title: "GAME START", body: canonical.gameStart.body });
+    setEventQueue([]);
+    setView("database");
     window.scrollTo({ top: 0, behavior: "auto" });
   }
 
@@ -73,7 +84,8 @@ function App() {
     localStorage.removeItem(SAVE_KEY);
     setState(initialState);
     setResult({ status: "START", title: "GAME START", body: canonical.gameStart.body });
-    setShowEnding(false);
+    setView("database");
+    setEventQueue([]);
   }
 
   if (!ready) return <main className="loading">DATABASE RECOVERY...</main>;
@@ -82,22 +94,29 @@ function App() {
     <div className="scanlines" aria-hidden="true" />
     <header className="masthead">
       <div className="brand"><Database /><div><b>KUZE PRIVATE INVESTIGATION DATABASE</b><span>CASE ID：KN-2026-08</span></div></div>
-      <div className="status"><ShieldCheck /><span>DATABASE ONLINE</span><b>PAGE {currentRecord ? String(currentRecord.number).padStart(2, "0") : "00"} / {canonical.records.length}</b></div>
+      <div className="status"><ShieldCheck /><span>DATABASE ONLINE</span><b>PAGE {view === "database" && currentRecord ? String(currentRecord.number).padStart(2, "0") : "00"} / {canonical.records.length}</b></div>
     </header>
 
-    <div className="workspace">
+    {view === "database" && <div className="workspace">
       <aside className="history-panel">
         <h2>SEARCH HISTORY</h2>
         {history.length ? <ol>{history.map((title) => <li key={title}><button onClick={() => runSearch(title)}>{title}</button></li>)}</ol> : <p>NO HISTORY</p>}
-        {state.completed && <div className="completion"><span>DATABASE COMPLETION</span><strong>{state.viewedRecords.length} / {canonical.records.length}</strong><button onClick={() => setShowEnding(true)}>FINAL REPORT</button></div>}
+        {state.gameCompleted && <div className="completion"><span>RECONSTRUCTION COMPLETE</span><strong>100%</strong><button onClick={() => setView("ending")}>FINAL REPORT</button></div>}
         <button className="reset" onClick={reset}><RotateCcw /> RESET DATA</button>
       </aside>
 
       <section className="terminal-panel">
+        {result.status === "START" && <div className="mode-status" aria-label="検索機能の状態">
+          {state.crossSearchUnlocked && <span>CROSS SEARCH MODE：ACTIVE</span>}
+          {state.advancedCrossSearchUnlocked && <span>ADVANCED CROSS SEARCH MODE：ACTIVE</span>}
+        </div>}
+        {result.status === "START" && state.dbAnalysisComplete && <button className="unsaved-alert" onClick={() => setView("audio-cache")}>
+          <AlertTriangle /><span><b>保存完了していない音声記録</b><small>RECOVERED：2 FILES</small></span>
+        </button>}
         <form className="search-box" onSubmit={(event) => { event.preventDefault(); runSearch(); }}>
           <label htmlFor="database-search"><Terminal /> {mode}</label>
           <div><input id="database-search" value={query} onChange={(event) => setQuery(event.target.value)} autoComplete="off" spellCheck={false} placeholder="検索キーを入力" autoFocus /><button type="submit"><SearchIcon /> SEARCH</button></div>
-          {state.unlockedFeatures.crossSearch && <small>複数検索では検索語の間に全角スペースを使用</small>}
+          {state.crossSearchUnlocked && <small>複数検索では検索語の間に全角スペースを使用</small>}
         </form>
 
         <article className={`result-card status-${result.status.toLowerCase()}`}>
@@ -106,18 +125,54 @@ function App() {
           <RichText text={currentRecord?.body ?? result.body} />
           <RecordMedia media={currentMedia} onExpand={() => setExpandedMedia(currentMedia)} />
           {result.suggestion && <button className="suggestion" onClick={() => runSearch(result.suggestion)}>「{result.suggestion}」を検索</button>}
+          {result.status !== "START" && <button className="back-top" onClick={goTop}><ArrowLeft /> データベースTOPへ戻る</button>}
         </article>
       </section>
-    </div>
+    </div>}
 
-    {activeEvent && <div className="modal-backdrop"><section className="system-event"><span>SYSTEM EVENT</span><RichText text={activeEvent.body} /><button onClick={() => setEventQueue(eventQueue.slice(1))}>ENABLE</button></section></div>}
+    {view === "audio-cache" && <section className="special-screen audio-cache-screen">
+      <span className="special-kicker">RECOVERED TEMPORARY DATA</span>
+      <h1>UNSAVED AUDIO CACHE</h1>
+      <RichText text={canonical.unsavedAudio.intro.body} />
+      <div className="audio-files">
+        <button onClick={() => setView("audio-01")}><FileAudio /><span><b>UNSAVED AUDIO 01</b><small>AVAILABLE</small></span></button>
+        <button disabled={!state.unsavedAudio01Viewed} onClick={() => setView("audio-02")}><FileAudio /><span><b>UNSAVED AUDIO 02</b><small>{state.unsavedAudio01Viewed ? "AVAILABLE" : "LOCKED"}</small></span></button>
+      </div>
+      <button className="back-top" onClick={goTop}><ArrowLeft /> データベースTOPへ戻る</button>
+    </section>}
+
+    {view === "audio-01" && <section className="special-screen audio-record-screen">
+      <span className="special-kicker">UNSAVED AUDIO CACHE / 01</span>
+      <h1>UNSAVED AUDIO 01</h1>
+      <RichText text={canonical.unsavedAudio.file01.body} />
+      <button className="advance-special" onClick={() => { setState(completeUnsavedAudio01(state)); setView("audio-cache"); window.scrollTo(0, 0); }}>END OF FILE｜CACHEへ戻る</button>
+      <button className="back-top" onClick={goTop}><ArrowLeft /> データベースTOPへ戻る</button>
+    </section>}
+
+    {view === "audio-02" && <section className="special-screen audio-record-screen">
+      <span className="special-kicker">UNSAVED AUDIO CACHE / 02</span>
+      <h1>UNSAVED AUDIO 02</h1>
+      <RichText text={canonical.unsavedAudio.file02.body} />
+      <button className="advance-special" onClick={() => { setState(completeUnsavedAudio02(state)); setView("recovery"); window.scrollTo(0, 0); }}>AUDIO DATA LOST｜復旧記録を確認</button>
+      <button className="back-top" onClick={goTop}><ArrowLeft /> データベースTOPへ戻る</button>
+    </section>}
+
+    {view === "recovery" && <section className="special-screen recovery-screen">
+      <span className="special-kicker">UNSAVED AUDIO CACHE　2/2　RECOVERY COMPLETE</span>
+      <h1>SYSTEM RECOVERY RECORD</h1>
+      <RichText text={canonical.systemRecovery.body} />
+      <button className="advance-special" onClick={() => { setState(completeGame(state)); setView("ending"); window.scrollTo(0, 0); }}>CASE RECONSTRUCTIONへ</button>
+      <button className="back-top" onClick={goTop}><ArrowLeft /> データベースTOPへ戻る</button>
+    </section>}
+
+    {activeEvent && <div className="modal-backdrop"><section className="system-event"><span>SYSTEM EVENT</span><RichText text={activeEvent.body} /><button onClick={goTop}>データベースTOPへ戻る</button></section></div>}
 
     {expandedMedia && <div className="media-modal" role="dialog" aria-modal="true" aria-label={expandedMedia.label} onClick={() => setExpandedMedia(null)}>
       <button className="media-close" onClick={() => setExpandedMedia(null)}>CLOSE ×</button>
       <img src={expandedMedia.src} alt={expandedMedia.alt} onClick={(event) => event.stopPropagation()} />
     </div>}
 
-    {showEnding && <div className="ending-screen"><button className="return-db" onClick={() => setShowEnding(false)}>DATABASEへ戻る</button><section><h1>CASE RECONSTRUCTION</h1><RichText text={canonical.ending.caseReconstruction.body} /></section><section><h1>PERSONAL NOTE</h1><RichText text={canonical.ending.personalNote.body} /></section><section className="final-card"><RichText text={canonical.ending.finalCard.body} /></section></div>}
+    {view === "ending" && <div className="ending-screen"><button className="return-db" onClick={goTop}>DATABASEへ戻る</button><section><h1>CASE RECONSTRUCTION</h1><RichText text={canonical.ending.caseReconstruction.body} /></section><section><h1>GAME START</h1><RichText text={canonical.ending.gameStartReprise.body} /></section><section className="reconstruction-meter"><h1>RECONSTRUCTION COMPLETE</h1><RichText text={canonical.ending.reconstructionComplete.body} /></section><section><h1>PERSONAL NOTE</h1><RichText text={canonical.ending.personalNote.body} /></section><section className="final-card"><RichText text={canonical.ending.finalCard.body} /></section></div>}
 
     <footer><span>このページはARG用です。全ての個人名。地名はフィクションです。</span><span>GOTO ARG LAB｜体験型ミステリー</span></footer>
   </main>;

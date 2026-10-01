@@ -69,356 +69,353 @@
     {
       "id": "SCRIPT_007",
       "number": 7,
-      "canonicalQuery": "御影隆一",
+      "canonicalQuery": "御影征一郎",
       "type": "single",
       "phase": 1,
       "orderIndependent": false,
       "contentKey": "SCRIPT_007",
-      "title": "御影隆一",
+      "title": "御影征一郎",
       "countsForProgress": true
     },
     {
       "id": "SCRIPT_008",
       "number": 8,
-      "canonicalQuery": "瀬川雅彦",
+      "canonicalQuery": "御影隆一",
       "type": "single",
       "phase": 1,
       "orderIndependent": false,
       "contentKey": "SCRIPT_008",
-      "title": "瀬川雅彦",
+      "title": "御影隆一",
       "countsForProgress": true
     },
     {
       "id": "SCRIPT_009",
       "number": 9,
-      "canonicalQuery": "榊原美智子",
+      "canonicalQuery": "瀬川雅彦",
       "type": "single",
       "phase": 1,
       "orderIndependent": false,
       "contentKey": "SCRIPT_009",
-      "title": "榊原美智子",
+      "title": "瀬川雅彦",
       "countsForProgress": true
     },
     {
       "id": "SCRIPT_010",
       "number": 10,
-      "canonicalQuery": "雨宮七海",
+      "canonicalQuery": "榊原美智子",
       "type": "single",
       "phase": 1,
       "orderIndependent": false,
       "contentKey": "SCRIPT_010",
-      "title": "雨宮七海",
+      "title": "榊原美智子",
       "countsForProgress": true
     },
     {
       "id": "SCRIPT_011",
       "number": 11,
-      "canonicalQuery": "水城沙耶",
+      "canonicalQuery": "雨宮七海",
       "type": "single",
       "phase": 1,
       "orderIndependent": false,
       "contentKey": "SCRIPT_011",
-      "title": "水城沙耶",
+      "title": "雨宮七海",
       "countsForProgress": true
     },
     {
       "id": "SCRIPT_012",
       "number": 12,
-      "canonicalQuery": "御影香織",
+      "canonicalQuery": "水城沙耶",
       "type": "single",
       "phase": 1,
       "orderIndependent": false,
       "contentKey": "SCRIPT_012",
-      "title": "御影香織",
+      "title": "水城沙耶",
       "countsForProgress": true
     },
     {
       "id": "SCRIPT_013",
       "number": 13,
-      "canonicalQuery": "神崎修",
+      "canonicalQuery": "御影香織",
       "type": "single",
       "phase": 1,
       "orderIndependent": false,
       "contentKey": "SCRIPT_013",
-      "title": "神崎修",
+      "title": "御影香織",
       "countsForProgress": true
     },
     {
       "id": "SCRIPT_014",
       "number": 14,
-      "canonicalQuery": "久世冬真",
+      "canonicalQuery": "神崎修",
       "type": "single",
       "phase": 1,
       "orderIndependent": false,
       "contentKey": "SCRIPT_014",
-      "title": "久世冬真",
+      "title": "神崎修",
       "countsForProgress": true
     },
     {
       "id": "SCRIPT_015",
       "number": 15,
-      "canonicalQuery": "音声記録202608301430",
+      "canonicalQuery": "久世冬真",
       "type": "single",
       "phase": 1,
       "orderIndependent": false,
       "contentKey": "SCRIPT_015",
-      "title": "音声記録202608301430",
+      "title": "久世冬真",
       "countsForProgress": true
     },
     {
       "id": "SCRIPT_016",
       "number": 16,
-      "canonicalQuery": "音声記録202608301915",
+      "canonicalQuery": "音声記録202608301430",
       "type": "single",
       "phase": 1,
       "orderIndependent": false,
       "contentKey": "SCRIPT_016",
-      "title": "音声記録202608301915",
+      "title": "音声記録202608301430",
       "countsForProgress": true
     },
     {
       "id": "SCRIPT_017",
       "number": 17,
-      "canonicalQuery": "音声記録202608311510",
+      "canonicalQuery": "音声記録202608301915",
       "type": "single",
       "phase": 1,
       "orderIndependent": false,
       "contentKey": "SCRIPT_017",
-      "title": "音声記録202608311510",
+      "title": "音声記録202608301915",
       "countsForProgress": true
     },
     {
       "id": "SCRIPT_018",
       "number": 18,
-      "canonicalQuery": "音声記録202608311940",
+      "canonicalQuery": "音声記録202608311510",
       "type": "single",
       "phase": 1,
       "orderIndependent": false,
       "contentKey": "SCRIPT_018",
-      "title": "音声記録202608311940",
+      "title": "音声記録202608311510",
       "countsForProgress": true
     },
     {
       "id": "SCRIPT_019",
       "number": 19,
-      "canonicalQuery": "音声記録202608301610",
+      "canonicalQuery": "音声記録202608311940",
       "type": "single",
       "phase": 1,
       "orderIndependent": false,
       "contentKey": "SCRIPT_019",
-      "title": "音声記録202608301610",
+      "title": "音声記録202608311940",
       "countsForProgress": true
     },
     {
       "id": "SCRIPT_020",
       "number": 20,
-      "canonicalQuery": "音声記録202609010925",
+      "canonicalQuery": "音声記録202608301610",
       "type": "single",
       "phase": 1,
       "orderIndependent": false,
       "contentKey": "SCRIPT_020",
-      "title": "音声記録202609010925",
+      "title": "音声記録202608301610",
       "countsForProgress": true
     },
     {
       "id": "SCRIPT_021",
       "number": 21,
-      "canonicalQuery": "音声記録202608301205",
+      "canonicalQuery": "音声記録202609010925",
       "type": "single",
       "phase": 1,
       "orderIndependent": false,
       "contentKey": "SCRIPT_021",
-      "title": "音声記録202608301205",
+      "title": "音声記録202609010925",
       "countsForProgress": true
     },
     {
       "id": "SCRIPT_022",
       "number": 22,
-      "canonicalQuery": "音声記録202608311330",
+      "canonicalQuery": "音声記録202608301205",
       "type": "single",
       "phase": 1,
       "orderIndependent": false,
       "contentKey": "SCRIPT_022",
-      "title": "音声記録202608311330",
+      "title": "音声記録202608301205",
       "countsForProgress": true
     },
     {
       "id": "SCRIPT_023",
       "number": 23,
-      "canonicalQuery": "音声記録202609011720",
+      "canonicalQuery": "音声記録202608311330",
       "type": "single",
       "phase": 1,
       "orderIndependent": false,
       "contentKey": "SCRIPT_023",
-      "title": "音声記録202609011720",
+      "title": "音声記録202608311330",
       "countsForProgress": true
     },
     {
       "id": "SCRIPT_024",
       "number": 24,
-      "canonicalQuery": "音声記録202609011405",
+      "canonicalQuery": "音声記録202609011720",
       "type": "single",
       "phase": 1,
       "orderIndependent": false,
       "contentKey": "SCRIPT_024",
-      "title": "音声記録202609011405",
+      "title": "音声記録202609011720",
       "countsForProgress": true
     },
     {
       "id": "SCRIPT_025",
       "number": 25,
-      "canonicalQuery": "音声記録202609011115",
+      "canonicalQuery": "音声記録202609011405",
       "type": "single",
       "phase": 1,
       "orderIndependent": false,
       "contentKey": "SCRIPT_025",
-      "title": "音声記録202609011115",
+      "title": "音声記録202609011405",
       "countsForProgress": true
     },
     {
       "id": "SCRIPT_026",
       "number": 26,
-      "canonicalQuery": "音声記録202609012145",
+      "canonicalQuery": "音声記録202609011115",
       "type": "single",
       "phase": 1,
       "orderIndependent": false,
       "contentKey": "SCRIPT_026",
-      "title": "音声記録202609012145",
+      "title": "音声記録202609011115",
       "countsForProgress": true
     },
     {
       "id": "SCRIPT_027",
       "number": 27,
-      "canonicalQuery": "御影澪",
+      "canonicalQuery": "音声記録202609012145",
       "type": "single",
       "phase": 1,
       "orderIndependent": false,
       "contentKey": "SCRIPT_027",
-      "title": "御影澪",
+      "title": "音声記録202609012145",
       "countsForProgress": true
     },
     {
       "id": "SCRIPT_028",
       "number": 28,
-      "canonicalQuery": "1998年8月17日",
+      "canonicalQuery": "御影澪",
       "type": "single",
       "phase": 1,
       "orderIndependent": false,
       "contentKey": "SCRIPT_028",
-      "title": "1998年8月17日",
+      "title": "御影澪",
       "countsForProgress": true
     },
     {
       "id": "SCRIPT_029",
       "number": 29,
-      "canonicalQuery": "旧滞在者名簿",
+      "canonicalQuery": "1998年8月17日",
       "type": "single",
       "phase": 1,
       "orderIndependent": false,
       "contentKey": "SCRIPT_029",
-      "title": "旧滞在者名簿",
+      "title": "1998年8月17日",
       "countsForProgress": true
     },
     {
       "id": "SCRIPT_030",
       "number": 30,
-      "canonicalQuery": "相沢佳代",
+      "canonicalQuery": "旧滞在者名簿",
       "type": "single",
       "phase": 1,
       "orderIndependent": false,
       "contentKey": "SCRIPT_030",
-      "title": "相沢佳代",
+      "title": "旧滞在者名簿",
       "countsForProgress": true
     },
     {
       "id": "SCRIPT_031",
       "number": 31,
-      "canonicalQuery": "相沢少年",
+      "canonicalQuery": "相沢佳代",
       "type": "single",
       "phase": 1,
       "orderIndependent": false,
       "contentKey": "SCRIPT_031",
-      "title": "相沢少年",
+      "title": "相沢佳代",
       "countsForProgress": true
     },
     {
       "id": "SCRIPT_032",
       "number": 32,
-      "canonicalQuery": "桟橋",
+      "canonicalQuery": "相沢少年",
       "type": "single",
       "phase": 1,
       "orderIndependent": false,
       "contentKey": "SCRIPT_032",
-      "title": "桟橋",
+      "title": "相沢少年",
       "countsForProgress": true
     },
     {
       "id": "SCRIPT_033",
       "number": 33,
-      "canonicalQuery": "古写真",
+      "canonicalQuery": "桟橋",
       "type": "single",
       "phase": 1,
       "orderIndependent": false,
       "contentKey": "SCRIPT_033",
-      "title": "古写真",
+      "title": "桟橋",
       "countsForProgress": true
     },
     {
       "id": "SCRIPT_034",
       "number": 34,
-      "canonicalQuery": "入り江",
+      "canonicalQuery": "古写真",
       "type": "single",
       "phase": 1,
       "orderIndependent": false,
       "contentKey": "SCRIPT_034",
-      "title": "入り江",
+      "title": "古写真",
       "countsForProgress": true
     },
     {
       "id": "SCRIPT_035",
       "number": 35,
-      "canonicalQuery": "第二遺言",
+      "canonicalQuery": "入り江",
       "type": "single",
       "phase": 1,
       "orderIndependent": false,
       "contentKey": "SCRIPT_035",
-      "title": "第二遺言",
+      "title": "入り江",
       "countsForProgress": true
     },
     {
       "id": "SCRIPT_036",
       "number": 36,
-      "canonicalQuery": "出生記録",
+      "canonicalQuery": "第二遺言",
       "type": "single",
       "phase": 1,
       "orderIndependent": false,
       "contentKey": "SCRIPT_036",
-      "title": "出生記録",
+      "title": "第二遺言",
       "countsForProgress": true
     },
     {
       "id": "SCRIPT_037",
       "number": 37,
-      "canonicalQuery": "御影七海",
+      "canonicalQuery": "出生記録",
       "type": "single",
       "phase": 1,
       "orderIndependent": false,
       "contentKey": "SCRIPT_037",
-      "title": "御影七海",
+      "title": "出生記録",
       "countsForProgress": true
     },
     {
       "id": "SCRIPT_038",
       "number": 38,
-      "canonicalQuery": [
-        "雨宮七海",
-        "御影七海"
-      ],
-      "type": "cross",
-      "phase": 2,
-      "orderIndependent": true,
+      "canonicalQuery": "御影七海",
+      "type": "single",
+      "phase": 1,
+      "orderIndependent": false,
       "contentKey": "SCRIPT_038",
-      "title": "雨宮七海　御影七海",
+      "title": "御影七海",
       "countsForProgress": true
     },
     {
@@ -426,13 +423,13 @@
       "number": 39,
       "canonicalQuery": [
         "雨宮七海",
-        "御影澪"
+        "御影七海"
       ],
       "type": "cross",
       "phase": 2,
       "orderIndependent": true,
       "contentKey": "SCRIPT_039",
-      "title": "雨宮七海　御影澪",
+      "title": "雨宮七海　御影七海",
       "countsForProgress": true
     },
     {
@@ -440,13 +437,13 @@
       "number": 40,
       "canonicalQuery": [
         "雨宮七海",
-        "御影隆一"
+        "御影澪"
       ],
       "type": "cross",
       "phase": 2,
       "orderIndependent": true,
       "contentKey": "SCRIPT_040",
-      "title": "雨宮七海　御影隆一",
+      "title": "雨宮七海　御影澪",
       "countsForProgress": true
     },
     {
@@ -454,29 +451,43 @@
       "number": 41,
       "canonicalQuery": [
         "雨宮七海",
-        "瀬川雅彦"
+        "御影隆一"
       ],
       "type": "cross",
       "phase": 2,
       "orderIndependent": true,
       "contentKey": "SCRIPT_041",
-      "title": "雨宮七海　瀬川雅彦",
+      "title": "雨宮七海　御影隆一",
       "countsForProgress": true
     },
     {
       "id": "SCRIPT_042",
       "number": 42,
-      "canonicalQuery": "音声記録202609021015",
-      "type": "single",
+      "canonicalQuery": [
+        "雨宮七海",
+        "瀬川雅彦"
+      ],
+      "type": "cross",
       "phase": 2,
-      "orderIndependent": false,
+      "orderIndependent": true,
       "contentKey": "SCRIPT_042",
-      "title": "音声記録202609021015",
+      "title": "雨宮七海　瀬川雅彦",
       "countsForProgress": true
     },
     {
       "id": "SCRIPT_043",
       "number": 43,
+      "canonicalQuery": "音声記録202609021015",
+      "type": "single",
+      "phase": 2,
+      "orderIndependent": false,
+      "contentKey": "SCRIPT_043",
+      "title": "音声記録202609021015",
+      "countsForProgress": true
+    },
+    {
+      "id": "SCRIPT_044",
+      "number": 44,
       "canonicalQuery": [
         "雨宮七海",
         "榊原美智子"
@@ -484,24 +495,24 @@
       "type": "cross",
       "phase": 2,
       "orderIndependent": true,
-      "contentKey": "SCRIPT_043",
-      "title": "雨宮七海　榊原美智子",
-      "countsForProgress": true
-    },
-    {
-      "id": "SCRIPT_044",
-      "number": 44,
-      "canonicalQuery": "音声記録202609011652",
-      "type": "single",
-      "phase": 2,
-      "orderIndependent": false,
       "contentKey": "SCRIPT_044",
-      "title": "音声記録202609011652",
+      "title": "雨宮七海　榊原美智子",
       "countsForProgress": true
     },
     {
       "id": "SCRIPT_045",
       "number": 45,
+      "canonicalQuery": "音声記録202609011652",
+      "type": "single",
+      "phase": 2,
+      "orderIndependent": false,
+      "contentKey": "SCRIPT_045",
+      "title": "音声記録202609011652",
+      "countsForProgress": true
+    },
+    {
+      "id": "SCRIPT_046",
+      "number": 46,
       "canonicalQuery": [
         "御影澪",
         "水城沙耶"
@@ -509,33 +520,19 @@
       "type": "cross",
       "phase": 2,
       "orderIndependent": true,
-      "contentKey": "SCRIPT_045",
-      "title": "御影澪　水城沙耶",
-      "countsForProgress": true
-    },
-    {
-      "id": "SCRIPT_046",
-      "number": 46,
-      "canonicalQuery": "筆跡照合",
-      "type": "single",
-      "phase": 2,
-      "orderIndependent": false,
       "contentKey": "SCRIPT_046",
-      "title": "筆跡照合",
+      "title": "御影澪　水城沙耶",
       "countsForProgress": true
     },
     {
       "id": "SCRIPT_047",
       "number": 47,
-      "canonicalQuery": [
-        "水城沙耶",
-        "相沢佳代"
-      ],
-      "type": "cross",
+      "canonicalQuery": "筆跡照合",
+      "type": "single",
       "phase": 2,
-      "orderIndependent": true,
+      "orderIndependent": false,
       "contentKey": "SCRIPT_047",
-      "title": "水城沙耶　相沢佳代",
+      "title": "筆跡照合",
       "countsForProgress": true
     },
     {
@@ -543,13 +540,13 @@
       "number": 48,
       "canonicalQuery": [
         "水城沙耶",
-        "榊原美智子"
+        "相沢佳代"
       ],
       "type": "cross",
       "phase": 2,
       "orderIndependent": true,
       "contentKey": "SCRIPT_048",
-      "title": "水城沙耶　榊原美智子",
+      "title": "水城沙耶　相沢佳代",
       "countsForProgress": true
     },
     {
@@ -557,27 +554,27 @@
       "number": 49,
       "canonicalQuery": [
         "水城沙耶",
-        "御影隆一"
+        "榊原美智子"
       ],
       "type": "cross",
       "phase": 2,
       "orderIndependent": true,
       "contentKey": "SCRIPT_049",
-      "title": "水城沙耶　御影隆一",
+      "title": "水城沙耶　榊原美智子",
       "countsForProgress": true
     },
     {
       "id": "SCRIPT_050",
       "number": 50,
       "canonicalQuery": [
-        "御影隆一",
-        "桟橋"
+        "水城沙耶",
+        "御影隆一"
       ],
       "type": "cross",
       "phase": 2,
       "orderIndependent": true,
       "contentKey": "SCRIPT_050",
-      "title": "御影隆一　桟橋",
+      "title": "水城沙耶　御影隆一",
       "countsForProgress": true
     },
     {
@@ -585,18 +582,32 @@
       "number": 51,
       "canonicalQuery": [
         "御影隆一",
-        "1998年8月17日"
+        "桟橋"
       ],
       "type": "cross",
       "phase": 2,
       "orderIndependent": true,
       "contentKey": "SCRIPT_051",
-      "title": "御影隆一　1998年8月17日",
+      "title": "御影隆一　桟橋",
       "countsForProgress": true
     },
     {
       "id": "SCRIPT_052",
       "number": 52,
+      "canonicalQuery": [
+        "御影隆一",
+        "1998年8月17日"
+      ],
+      "type": "cross",
+      "phase": 2,
+      "orderIndependent": true,
+      "contentKey": "SCRIPT_052",
+      "title": "御影隆一　1998年8月17日",
+      "countsForProgress": true
+    },
+    {
+      "id": "SCRIPT_053",
+      "number": 53,
       "canonicalQuery": [
         "瀬川雅彦",
         "1998年8月17日"
@@ -604,13 +615,13 @@
       "type": "cross",
       "phase": 2,
       "orderIndependent": true,
-      "contentKey": "SCRIPT_052",
+      "contentKey": "SCRIPT_053",
       "title": "瀬川雅彦　1998年8月17日",
       "countsForProgress": true
     },
     {
-      "id": "SCRIPT_053",
-      "number": 53,
+      "id": "SCRIPT_054",
+      "number": 54,
       "canonicalQuery": [
         "榊原美智子",
         "御影澪"
@@ -618,13 +629,13 @@
       "type": "cross",
       "phase": 2,
       "orderIndependent": true,
-      "contentKey": "SCRIPT_053",
+      "contentKey": "SCRIPT_054",
       "title": "榊原美智子　御影澪",
       "countsForProgress": true
     },
     {
-      "id": "SCRIPT_054",
-      "number": 54,
+      "id": "SCRIPT_055",
+      "number": 55,
       "canonicalQuery": [
         "神崎修",
         "通信設備"
@@ -632,13 +643,13 @@
       "type": "cross",
       "phase": 2,
       "orderIndependent": true,
-      "contentKey": "SCRIPT_054",
+      "contentKey": "SCRIPT_055",
       "title": "神崎修　通信設備",
       "countsForProgress": true
     },
     {
-      "id": "SCRIPT_055",
-      "number": 55,
+      "id": "SCRIPT_056",
+      "number": 56,
       "canonicalQuery": [
         "御影香織",
         "古写真"
@@ -646,22 +657,8 @@
       "type": "cross",
       "phase": 2,
       "orderIndependent": true,
-      "contentKey": "SCRIPT_055",
-      "title": "御影香織　古写真",
-      "countsForProgress": true
-    },
-    {
-      "id": "SCRIPT_056",
-      "number": 56,
-      "canonicalQuery": [
-        "久世冬真",
-        "入り江"
-      ],
-      "type": "cross",
-      "phase": 2,
-      "orderIndependent": true,
       "contentKey": "SCRIPT_056",
-      "title": "久世冬真　入り江",
+      "title": "御影香織　古写真",
       "countsForProgress": true
     },
     {
@@ -669,13 +666,13 @@
       "number": 57,
       "canonicalQuery": [
         "久世冬真",
-        "古写真"
+        "入り江"
       ],
       "type": "cross",
       "phase": 2,
       "orderIndependent": true,
       "contentKey": "SCRIPT_057",
-      "title": "久世冬真　古写真",
+      "title": "久世冬真　入り江",
       "countsForProgress": true
     },
     {
@@ -683,13 +680,13 @@
       "number": 58,
       "canonicalQuery": [
         "久世冬真",
-        "相沢少年"
+        "古写真"
       ],
       "type": "cross",
       "phase": 2,
       "orderIndependent": true,
       "contentKey": "SCRIPT_058",
-      "title": "久世冬真　相沢少年",
+      "title": "久世冬真　古写真",
       "countsForProgress": true
     },
     {
@@ -697,18 +694,32 @@
       "number": 59,
       "canonicalQuery": [
         "久世冬真",
-        "相沢佳代"
+        "相沢少年"
       ],
       "type": "cross",
       "phase": 2,
       "orderIndependent": true,
       "contentKey": "SCRIPT_059",
-      "title": "久世冬真　相沢佳代",
+      "title": "久世冬真　相沢少年",
       "countsForProgress": true
     },
     {
       "id": "SCRIPT_060",
       "number": 60,
+      "canonicalQuery": [
+        "久世冬真",
+        "相沢佳代"
+      ],
+      "type": "cross",
+      "phase": 2,
+      "orderIndependent": true,
+      "contentKey": "SCRIPT_060",
+      "title": "久世冬真　相沢佳代",
+      "countsForProgress": true
+    },
+    {
+      "id": "SCRIPT_061",
+      "number": 61,
       "canonicalQuery": [
         "御影澪",
         "水城沙耶",
@@ -717,13 +728,13 @@
       "type": "advanced_cross",
       "phase": 3,
       "orderIndependent": true,
-      "contentKey": "SCRIPT_060",
+      "contentKey": "SCRIPT_061",
       "title": "御影澪　水城沙耶　榊原美智子",
       "countsForProgress": true
     },
     {
-      "id": "SCRIPT_061",
-      "number": 61,
+      "id": "SCRIPT_062",
+      "number": 62,
       "canonicalQuery": [
         "御影澪",
         "雨宮七海",
@@ -732,13 +743,13 @@
       "type": "advanced_cross",
       "phase": 3,
       "orderIndependent": true,
-      "contentKey": "SCRIPT_061",
+      "contentKey": "SCRIPT_062",
       "title": "御影澪　雨宮七海　御影征一郎",
       "countsForProgress": true
     },
     {
-      "id": "SCRIPT_062",
-      "number": 62,
+      "id": "SCRIPT_063",
+      "number": 63,
       "canonicalQuery": [
         "御影隆一",
         "御影澪",
@@ -747,67 +758,8 @@
       "type": "advanced_cross",
       "phase": 3,
       "orderIndependent": true,
-      "contentKey": "SCRIPT_062",
-      "title": "御影隆一　御影澪　桟橋",
-      "countsForProgress": true
-    },
-    {
-      "id": "SCRIPT_063",
-      "number": 63,
-      "canonicalQuery": [
-        "相沢佳代",
-        "相沢少年",
-        "久世冬真"
-      ],
-      "type": "advanced_cross",
-      "phase": 3,
-      "orderIndependent": true,
       "contentKey": "SCRIPT_063",
-      "title": "相沢佳代　相沢少年　久世冬真",
-      "countsForProgress": true
-    },
-    {
-      "id": "SCRIPT_064",
-      "number": 64,
-      "canonicalQuery": "音声記録202609022218",
-      "type": "single",
-      "phase": 3,
-      "orderIndependent": false,
-      "contentKey": "SCRIPT_064",
-      "title": "音声記録202609022218",
-      "countsForProgress": true
-    },
-    {
-      "id": "SCRIPT_065",
-      "number": 65,
-      "canonicalQuery": "グラス",
-      "type": "single",
-      "phase": 3,
-      "orderIndependent": false,
-      "contentKey": "SCRIPT_065",
-      "title": "グラス",
-      "countsForProgress": true
-    },
-    {
-      "id": "SCRIPT_066",
-      "number": 66,
-      "canonicalQuery": "薬剤",
-      "type": "single",
-      "phase": 3,
-      "orderIndependent": false,
-      "contentKey": "SCRIPT_066",
-      "title": "薬剤",
-      "countsForProgress": true
-    },
-    {
-      "id": "SCRIPT_067",
-      "number": 67,
-      "canonicalQuery": "久世負傷",
-      "type": "single",
-      "phase": 3,
-      "orderIndependent": false,
-      "contentKey": "SCRIPT_067",
-      "title": "久世負傷",
+      "title": "御影隆一　御影澪　桟橋",
       "countsForProgress": true
     }
   ]
