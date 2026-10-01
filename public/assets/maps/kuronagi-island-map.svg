@@ -1,23 +1,42 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
-  <title id="title">黒凪島 島内地図</title>
-  <desc id="desc">黒凪島の黒凪館、旧灯台、旧桟橋、東岸桟橋、入り江と連絡路を示す調査地図</desc>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 1000" role="img" aria-labelledby="title desc">
+  <title id="title">黒凪島 島内調査地図 詳細版</title>
+  <desc id="desc">黒凪島の海岸地形、標高、森林、黒凪館、旧灯台、旧桟橋、東岸桟橋、入り江、島内経路を示す詳細な捜査地図</desc>
   <defs>
-    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#26312d" stroke-width="1"/></pattern>
-    <filter id="rough"><feTurbulence baseFrequency=".012" numOctaves="3" seed="8" result="noise"/><feDisplacementMap in="SourceGraphic" in2="noise" scale="6"/></filter>
+    <pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse"><path d="M50 0H0V50" fill="none" stroke="#22302a" stroke-width="1"/></pattern>
+    <pattern id="sea" width="30" height="18" patternUnits="userSpaceOnUse"><path d="M0 9c8-5 16-5 30 0" fill="none" stroke="#263b35" stroke-width="1" opacity=".8"/></pattern>
+    <pattern id="forest" width="24" height="24" patternUnits="userSpaceOnUse"><circle cx="6" cy="6" r="2" fill="#3e574b"/><circle cx="18" cy="15" r="2.5" fill="#344b40"/><path d="M6 8v4m12 6v4" stroke="#52695d" stroke-width="1"/></pattern>
     <style>
-      .label{font-family:'Yu Gothic',sans-serif;fill:#d7e0db;font-size:24px}.small{font-family:monospace;fill:#8ea097;font-size:16px;letter-spacing:2px}.route{fill:none;stroke:#8b9c93;stroke-width:5;stroke-dasharray:10 9}.leader{stroke:#7d9186;stroke-width:2}.point{fill:#b7c8bf;stroke:#07100c;stroke-width:4}.coast{fill:#18221e;stroke:#91a299;stroke-width:4}.forest{fill:none;stroke:#42534b;stroke-width:18;stroke-dasharray:2 22;opacity:.8}
+      .jp{font-family:'Yu Gothic','Hiragino Kaku Gothic ProN',sans-serif;fill:#dce5e0}.mono{font-family:monospace;fill:#91a49a;letter-spacing:2px}.title{font-size:34px;font-weight:600}.label{font-size:23px;font-weight:600}.minor{font-size:15px}.note{font-size:14px}.coast{fill:#14221c;stroke:#a8bab0;stroke-width:5}.contour{fill:none;stroke:#53685d;stroke-width:2;opacity:.75}.contour-minor{fill:none;stroke:#394b42;stroke-width:1.2;opacity:.75}.road{fill:none;stroke:#b4c2ba;stroke-width:7;stroke-linecap:round}.trail{fill:none;stroke:#93a69b;stroke-width:4;stroke-dasharray:9 8;stroke-linecap:round}.oldtrail{fill:none;stroke:#6f8178;stroke-width:3;stroke-dasharray:3 8}.leader{fill:none;stroke:#91a49a;stroke-width:2}.site{fill:#d2ded8;stroke:#07100c;stroke-width:4}.danger{fill:#b99e68;stroke:#090d0b;stroke-width:4}.index{fill:#0c1411;stroke:#788d82;stroke-width:2}.cliff{fill:none;stroke:#8fa298;stroke-width:3;stroke-dasharray:3 7}.water{fill:#08120f}
     </style>
   </defs>
-  <rect width="1200" height="760" fill="#0a0f0d"/><rect x="20" y="20" width="1160" height="720" fill="url(#grid)" stroke="#435149"/>
-  <text x="54" y="66" class="small">KUZE P.I. DATABASE / LOCATION FILE 01</text><text x="54" y="108" class="label" font-size="34">黒凪島　島内調査地図</text>
-  <path class="coast" filter="url(#rough)" d="M285 120C430 70 658 79 821 143c142 56 239 169 229 298-8 108-109 162-209 210-121 59-293 77-437 37-131-37-243-126-263-237-24-129 34-273 144-331Z"/>
-  <path class="forest" d="M324 183C460 133 663 144 810 210c95 42 144 119 138 211-6 80-72 126-156 162-111 47-249 51-352 17-107-36-180-104-185-191-6-91 10-183 69-226Z"/>
-  <path class="route" d="M972 396C849 405 759 393 624 389S409 322 312 202M624 389c104-48 171-116 196-202M624 389c-87 103-154 153-242 216"/>
-  <g><circle class="point" cx="624" cy="389" r="11"/><path class="leader" d="M624 389l-55-78"/><text class="label" x="430" y="294">黒凪館</text><text class="small" x="430" y="318">CENTRAL MANSION</text></g>
-  <g><circle class="point" cx="820" cy="187" r="11"/><path class="leader" d="M820 187l54-51"/><text class="label" x="879" y="129">旧灯台</text><text class="small" x="879" y="151">OLD LIGHTHOUSE</text></g>
-  <g><circle class="point" cx="901" cy="235" r="11"/><path class="leader" d="M901 235l91-29"/><text class="label" x="998" y="202">旧桟橋</text><text class="small" x="998" y="225">1998 SITE</text></g>
-  <g><circle class="point" cx="972" cy="396" r="11"/><path class="leader" d="M972 396l94 14"/><text class="label" x="966" y="454">東岸桟橋</text><text class="small" x="966" y="478">LANDING PIER</text></g>
-  <g><circle class="point" cx="382" cy="605" r="11"/><path class="leader" d="M382 605l-108 45"/><text class="label" x="108" y="668">入り江</text><text class="small" x="108" y="692">UNLISTED COVE</text></g>
-  <g transform="translate(1090 80)"><path d="M0 70V0m0 0-12 25m12-25 12 25" stroke="#b9c9c0" stroke-width="3" fill="none"/><text class="small" x="-7" y="92">N</text></g>
-  <g transform="translate(785 685)"><path d="M0 0h270" stroke="#8da097" stroke-width="4"/><path d="M0-8v16M135-8v16M270-8v16" stroke="#8da097" stroke-width="3"/><text class="small" x="84" y="28">0　500 m　1 km</text></g>
+  <rect width="1400" height="1000" fill="#07100d"/><rect x="24" y="24" width="1352" height="952" fill="url(#grid)" stroke="#506158"/>
+  <rect x="40" y="140" width="1320" height="780" fill="url(#sea)" stroke="#2f443a"/>
+  <g>
+    <path class="coast" d="M334 184c83-64 229-98 380-83 173 16 325 77 403 176 56 71 72 166 38 252-25 64-74 115-116 179-42 65-104 128-202 163-109 39-248 43-367 5-115-36-214-111-251-203-38-94-30-218 17-313 25-51 50-126 98-176Z"/>
+    <path d="M349 213c95-56 228-77 359-63 157 16 284 67 353 150 48 58 59 137 29 209-27 64-76 111-115 167-37 54-91 103-172 132-92 33-206 35-304 4-100-32-184-95-216-173-33-82-25-186 16-267 22-44 29-113 50-159Z" fill="url(#forest)" opacity=".95"/>
+    <path class="contour" d="M394 261c94-50 229-63 345-38 119 26 221 84 254 158 30 68 0 151-46 205-49 59-109 109-199 131-89 22-192 6-264-37-70-42-119-110-119-182 0-81 16-187 29-237Z"/>
+    <path class="contour-minor" d="M437 305c78-39 187-43 279-19 95 24 172 68 195 125 24 59-12 126-51 167-42 45-95 80-167 91-69 11-145-9-194-48-49-39-78-94-72-151 6-59 8-122 10-165Z"/>
+    <path class="contour" d="M492 353c61-27 145-27 211-5 69 23 123 59 137 103 14 45-17 91-48 120-33 31-77 53-130 56-51 3-105-17-137-49-34-34-48-77-38-118 9-38 8-78 5-107Z"/>
+    <path class="contour-minor" d="M548 400c42-17 98-15 139 2 43 17 73 42 79 69 7 29-17 56-40 72-25 18-58 29-92 26-34-3-66-19-83-40-18-23-21-49-10-71 10-22 10-42 7-58Z"/>
+    <path class="cliff" d="M916 164c100 25 180 67 225 121M1060 260c62 72 86 154 64 235M1117 512c-19 58-54 103-89 152M346 822c-57-40-99-90-123-147"/>
+    <path class="road" d="M1119 488C1000 487 913 496 822 506 744 515 680 519 618 505"/>
+    <path class="road" d="M618 505c-65-42-117-86-165-135-42-43-67-91-91-142"/>
+    <path class="trail" d="M618 505c77-73 147-134 250-211 39-29 71-63 93-101"/>
+    <path class="trail" d="M618 505c-65 84-130 155-218 235-22 20-43 49-55 83"/>
+    <path class="oldtrail" d="M868 294c53 14 92 30 128 61 30 26 55 51 69 82"/>
+    <path class="water" d="M307 789c30-29 64-33 98-9 27 20 38 49 31 75-35 13-72 13-106 4-22-18-29-43-23-70Z"/>
+  </g>
+
+  <g transform="translate(55 55)"><text class="mono minor">KUZE P.I. DATABASE / LOCATION FILE 01 / REV.02</text><text y="44" class="jp title">黒凪島　島内調査地図</text><text y="73" class="mono note">SURVEY OVERLAY：COAST / ELEVATION / ACCESS ROUTES</text></g>
+  <g transform="translate(1248 62)"><path d="M0 75V0m0 0-13 28m13-28 13 28" fill="none" stroke="#cad6cf" stroke-width="3"/><text x="-7" y="100" class="mono minor">N</text><text x="-28" y="121" class="mono note">TRUE NORTH</text></g>
+
+  <g><rect class="index" x="585" y="470" width="66" height="55" rx="2"/><path d="M596 470v-18h44v18m-50 18h56m-46 12h36" fill="none" stroke="#c4d2ca" stroke-width="3"/><circle class="site" cx="618" cy="505" r="10"/><path class="leader" d="M598 468l-82-87"/><text x="342" y="363" class="jp label">黒凪館</text><text x="342" y="388" class="mono minor">CENTRAL RIDGE / EL. 84 m</text><text x="342" y="411" class="mono note">庭・正面道・裏手林道</text></g>
+  <g><circle class="danger" cx="961" cy="193" r="10"/><path d="M948 193h26m-19-12h12l8 35h-28Z" fill="none" stroke="#d5c8a2" stroke-width="3"/><path class="leader" d="M974 180l58-65"/><text x="1038" y="104" class="jp label">旧灯台</text><text x="1038" y="129" class="mono minor">NORTH HEAD / EL. 112 m</text><text x="1038" y="152" class="mono note">第二事件現場</text></g>
+  <g><circle class="danger" cx="1065" cy="437" r="10"/><path d="M1065 437l67-6m-45-11 45 11-42 17" fill="none" stroke="#c9d6cf" stroke-width="3"/><path class="leader" d="M1080 448l77 52"/><text x="1165" y="505" class="jp label">旧桟橋</text><text x="1165" y="530" class="mono minor">NORTHEAST PIER</text><text x="1165" y="553" class="mono note">1998.08.17 現場</text></g>
+  <g><circle class="site" cx="1119" cy="488" r="10"/><path d="M1119 488l92 2m-57-13 57 13-57 13" fill="none" stroke="#c9d6cf" stroke-width="3"/><path class="leader" d="M1133 475l48-75"/><text x="1185" y="384" class="jp label">東岸桟橋</text><text x="1185" y="409" class="mono minor">LANDING PIER</text><text x="1185" y="432" class="mono note">本土連絡船</text></g>
+  <g><circle class="site" cx="345" cy="823" r="10"/><path class="leader" d="M336 809l-95-75"/><text x="76" y="706" class="jp label">入り江</text><text x="76" y="731" class="mono minor">UNLISTED COVE</text><text x="76" y="754" class="mono note">現行地図記載なし</text></g>
+  <g><path class="leader" d="M560 540l-46 87"/><text x="385" y="648" class="jp minor">黒凪館裏手の林</text><text x="385" y="670" class="mono note">15:42 裏口 → 15:47 林内 → 15:53 入り江</text></g>
+
+  <g transform="translate(50 905)"><rect width="540" height="52" class="index"/><path class="road" d="M18 17h52"/><text x="82" y="22" class="mono note">車両通行路</text><path class="trail" d="M202 17h52"/><text x="266" y="22" class="mono note">徒歩道</text><path class="oldtrail" d="M369 17h52"/><text x="433" y="22" class="mono note">旧道</text><text x="18" y="43" class="mono note">● 調査地点　◆ 事件関連地点　等高線 20 m 間隔</text></g>
+  <g transform="translate(905 922)"><path d="M0 0h360" stroke="#b7c5bd" stroke-width="4"/><path d="M0-9v18M90-9v18M180-9v18M270-9v18M360-9v18" stroke="#b7c5bd" stroke-width="3"/><text x="70" y="28" class="mono note">0　250　500　750　1000 m</text></g>
 </svg>

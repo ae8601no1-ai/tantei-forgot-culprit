@@ -1,13 +1,71 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-labelledby="title desc">
-  <title id="title">黒凪館 内部地図</title>
-  <desc id="desc">黒凪館の地下、1階、2階の部屋と階段、正面玄関、裏口を示す見取図</desc>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 1100" role="img" aria-labelledby="title desc">
+  <title id="title">黒凪館 館内見取図 詳細版</title>
+  <desc id="desc">黒凪館の地下、1階、2階について壁、扉、窓、階段、廊下、主要室、出入口、事件関連地点を示す詳細な建築図面</desc>
   <defs>
-    <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse"><path d="M32 0H0V32" fill="none" stroke="#222c28" stroke-width="1"/></pattern>
-    <style>.wall{fill:#111815;stroke:#91a39a;stroke-width:4}.inner{fill:none;stroke:#62736b;stroke-width:3}.door{fill:none;stroke:#d2ddd7;stroke-width:5}.label{font-family:'Yu Gothic',sans-serif;fill:#d7e0db;font-size:22px;text-anchor:middle}.small{font-family:monospace;fill:#899b92;font-size:15px;letter-spacing:2px}.floor{font-family:monospace;fill:#bac9c1;font-size:24px;letter-spacing:3px}.stairs{stroke:#6f8278;stroke-width:2}.exit{fill:#aabdb3;font-family:'Yu Gothic',sans-serif;font-size:16px}</style>
+    <pattern id="grid" width="25" height="25" patternUnits="userSpaceOnUse"><path d="M25 0H0V25" fill="none" stroke="#202c27" stroke-width="1"/></pattern>
+    <pattern id="stone" width="18" height="12" patternUnits="userSpaceOnUse"><path d="M0 0h18M0 12h18M9 0v6M3 6v6" fill="none" stroke="#384a41" stroke-width="1"/></pattern>
+    <style>
+      .jp{font-family:'Yu Gothic','Hiragino Kaku Gothic ProN',sans-serif;fill:#dce5e0}.mono{font-family:monospace;fill:#8fa198;letter-spacing:2px}.heading{font-size:34px;font-weight:600}.floorname{font-size:25px;font-weight:600}.room{font-size:19px;text-anchor:middle}.sub{font-size:13px;text-anchor:middle}.wall{fill:#101814;stroke:#afbeb6;stroke-width:8}.partition{fill:none;stroke:#82958b;stroke-width:5}.thin{fill:none;stroke:#53675d;stroke-width:2}.door{fill:none;stroke:#d7e1dc;stroke-width:3}.window{stroke:#83a99a;stroke-width:7}.stair{stroke:#75897e;stroke-width:2}.site{fill:#bba36d;stroke:#09100d;stroke-width:3}.marker{font-family:monospace;fill:#f0e2b7;font-size:13px;font-weight:bold;text-anchor:middle}.note{font-size:13px}.box{fill:#0b120f;stroke:#4c6056;stroke-width:2}.route{fill:none;stroke:#adbdB5;stroke-width:3;stroke-dasharray:8 7}
+    </style>
   </defs>
-  <rect width="1200" height="900" fill="#090e0c"/><rect x="20" y="20" width="1160" height="860" fill="url(#grid)" stroke="#435149"/>
-  <text x="55" y="65" class="small">KUZE P.I. DATABASE / ARCHITECTURAL FILE 02</text><text x="55" y="108" class="floor">黒凪館　館内見取図</text>
-  <g transform="translate(55 165)"><text class="floor" x="0" y="-18">2F</text><rect class="wall" x="100" y="0" width="930" height="180"/><path class="inner" d="M300 0v180M500 0v180M700 0v180M880 0v180M100 112h930"/><text class="label" x="200" y="67">客室 201</text><text class="label" x="400" y="67">客室 202</text><text class="label" x="600" y="67">客室 203</text><text class="label" x="790" y="67">客室 204</text><text class="label" x="955" y="67">階段</text><text class="small" x="456" y="154">2F CORRIDOR</text><g class="stairs"><path d="M900 18h110M900 32h110M900 46h110M900 60h110M900 74h110M900 88h110"/></g></g>
-  <g transform="translate(55 425)"><text class="floor" x="0" y="-18">1F</text><rect class="wall" x="100" y="0" width="930" height="240"/><path class="inner" d="M340 0v240M610 0v240M820 0v240M100 142h930"/><text class="label" x="220" y="74">応接室</text><text class="label" x="475" y="74">食堂</text><text class="label" x="715" y="74">書斎</text><text class="label" x="925" y="74">階段</text><text class="label" x="225" y="199">玄関ホール</text><text class="label" x="475" y="199">厨房</text><text class="label" x="715" y="199">廊下</text><text class="label" x="925" y="199">裏口</text><path class="door" d="M190 240h65M930 240h65"/><text class="exit" x="181" y="272">正面玄関</text><text class="exit" x="916" y="272">林・入り江へ</text><g class="stairs"><path d="M845 18h150M845 36h150M845 54h150M845 72h150M845 90h150M845 108h150"/></g></g>
-  <g transform="translate(55 765)"><text class="floor" x="0" y="-18">B1</text><rect class="wall" x="100" y="0" width="930" height="90"/><path class="inner" d="M760 0v90"/><text class="label" x="430" y="54">旧貯蔵庫</text><text class="label" x="895" y="54">地下階段</text><g class="stairs"><path d="M785 16h220M785 30h220M785 44h220M785 58h220M785 72h220"/></g></g>
+  <rect width="1400" height="1100" fill="#07100d"/><rect x="24" y="24" width="1352" height="1052" fill="url(#grid)" stroke="#506158"/>
+  <g transform="translate(55 54)"><text class="mono note">KUZE P.I. DATABASE / ARCHITECTURAL FILE 02 / REV.02</text><text y="45" class="jp heading">黒凪館　館内見取図</text><text y="74" class="mono note">COMPOSITE FLOOR PLAN / ACCESS &amp; INCIDENT OVERLAY</text></g>
+  <g transform="translate(1175 55)"><path d="M0 60V0m0 0-11 24m11-24 11 24" stroke="#c7d4cd" stroke-width="3" fill="none"/><text x="-5" y="82" class="mono note">N</text></g>
+
+  <!-- 2F -->
+  <g transform="translate(85 170)">
+    <text x="0" y="26" class="jp floorname">2F</text><text x="0" y="50" class="mono note">GUEST FLOOR</text>
+    <path class="wall" d="M120 0H1190V255H120Z"/>
+    <path class="partition" d="M120 165h1070M330 0v165M540 0v165M750 0v165M960 0v255"/>
+    <path class="partition" d="M750 165v90"/>
+    <text x="225" y="73" class="jp room">客室 201</text><text x="225" y="98" class="mono sub">GUEST ROOM</text>
+    <text x="435" y="73" class="jp room">客室 202</text><text x="435" y="98" class="mono sub">GUEST ROOM</text>
+    <text x="645" y="73" class="jp room">客室 203</text><text x="645" y="98" class="mono sub">GUEST ROOM</text>
+    <text x="855" y="73" class="jp room">客室 204</text><text x="855" y="98" class="mono sub">GUEST ROOM</text>
+    <text x="1075" y="92" class="jp room">主階段</text><text x="1075" y="117" class="mono sub">MAIN STAIR</text>
+    <text x="540" y="220" class="jp room">客室棟廊下</text><text x="540" y="242" class="mono sub">CORRIDOR / CAMERA COVERAGE</text>
+    <text x="855" y="216" class="jp room">洗面・浴室</text>
+    <g class="stair"><path d="M995 25h155M995 43h155M995 61h155M995 79h155M995 97h155M995 115h155M995 133h155"/><path d="M1072 145V28m0 0-10 18m10-18 10 18"/></g>
+    <g class="door"><path d="M288 165v-38a38 38 0 0 1 38 38M498 165v-38a38 38 0 0 1 38 38M708 165v-38a38 38 0 0 1 38 38M918 165v-38a38 38 0 0 1 38 38"/></g>
+    <path class="window" d="M165 0h80M375 0h80M585 0h80M795 0h80"/>
+    <g transform="translate(925 194)"><path d="M0 0l19 9-19 9Z" fill="#9ab9aa"/><circle cx="-5" cy="9" r="5" fill="#9ab9aa"/><text x="-55" y="38" class="mono note">CAM-02</text></g>
+    <path class="route" d="M510 205h410"/>
+  </g>
+
+  <!-- 1F -->
+  <g transform="translate(85 520)">
+    <text x="0" y="26" class="jp floorname">1F</text><text x="0" y="50" class="mono note">MAIN FLOOR</text>
+    <path class="wall" d="M120 0H1190V315H120Z"/>
+    <path class="partition" d="M120 185h1070M390 0v185M685 0v185M930 0v315M390 185v130M685 185v130"/>
+    <text x="255" y="78" class="jp room">応接室</text><text x="255" y="103" class="mono sub">DRAWING ROOM</text>
+    <text x="537" y="78" class="jp room">食堂</text><text x="537" y="103" class="mono sub">DINING ROOM</text>
+    <text x="807" y="78" class="jp room">書斎</text><text x="807" y="103" class="mono sub">STUDY / 第一事件現場</text>
+    <text x="1060" y="88" class="jp room">主階段</text><text x="1060" y="113" class="mono sub">MAIN STAIR</text>
+    <text x="255" y="252" class="jp room">玄関ホール</text><text x="255" y="277" class="mono sub">ENTRANCE HALL</text>
+    <text x="537" y="252" class="jp room">厨房</text><text x="537" y="277" class="mono sub">KITCHEN</text>
+    <text x="807" y="244" class="jp room">中央廊下</text><text x="807" y="269" class="mono sub">地下階段接続</text>
+    <text x="1060" y="244" class="jp room">裏口区画</text><text x="1060" y="269" class="mono sub">REAR EXIT</text>
+    <g class="stair"><path d="M965 25h180M965 45h180M965 65h180M965 85h180M965 105h180M965 125h180M965 145h180"/><path d="M1055 160V28m0 0-10 18m10-18 10 18"/></g>
+    <g class="door"><path d="M345 185v-42a42 42 0 0 1 42 42M640 185v-42a42 42 0 0 1 42 42M885 185v-42a42 42 0 0 1 42 42M390 266h-42a42 42 0 0 0 42 42M685 266h-42a42 42 0 0 0 42 42M930 266h-42a42 42 0 0 0 42 42"/></g>
+    <path class="window" d="M170 0h90M460 0h105M750 0h100M120 220v65M1190 215v60"/>
+    <path class="door" d="M215 315h80M1030 315h80"/><path d="M255 315v38m815-38v38" stroke="#d7e1dc" stroke-width="3"/>
+    <text x="255" y="377" class="jp note" text-anchor="middle">正面玄関 → 前庭</text><text x="1070" y="377" class="jp note" text-anchor="middle">裏口 → 林・入り江</text>
+    <circle class="site" cx="807" cy="128" r="15"/><text x="807" y="133" class="marker">01</text>
+    <circle class="site" cx="1045" cy="292" r="15"/><text x="1045" y="297" class="marker">R</text>
+    <path class="route" d="M1070 278H855v-70"/>
+  </g>
+
+  <!-- B1 -->
+  <g transform="translate(85 945)">
+    <text x="0" y="26" class="jp floorname">B1</text><text x="0" y="50" class="mono note">SERVICE LEVEL</text>
+    <path class="wall" d="M120 0H1190V105H120Z" fill="url(#stone)"/>
+    <path class="partition" d="M875 0v105"/>
+    <text x="495" y="49" class="jp room">旧貯蔵庫</text><text x="495" y="75" class="mono sub">OLD STOREHOUSE / 第三事件現場</text>
+    <text x="1030" y="49" class="jp room">地下階段</text><text x="1030" y="75" class="mono sub">STONE STEPS</text>
+    <g class="stair"><path d="M900 18h255M900 32h255M900 46h255M900 60h255M900 74h255M900 88h255"/></g>
+    <path class="door" d="M875 55h-42a42 42 0 0 0 42 42"/>
+    <circle class="site" cx="790" cy="62" r="15"/><text x="790" y="67" class="marker">03</text>
+  </g>
+
+  <g transform="translate(900 900)"><rect width="400" height="52" class="box"/><circle class="site" cx="20" cy="17" r="10"/><text x="42" y="22" class="mono note">事件関連地点</text><path class="window" d="M175 17h42"/><text x="230" y="22" class="mono note">窓</text><path class="route" d="M290 17h42"/><text x="342" y="22" class="mono note">移動記録</text><text x="15" y="43" class="mono note">01 第一事件　03 第三事件　R 久世発見位置</text></g>
 </svg>
