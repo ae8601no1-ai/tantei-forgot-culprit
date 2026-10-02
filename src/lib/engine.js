@@ -7,8 +7,12 @@ import hints from "../data/hints.json" with { type: "json" };
 export const initialState = {
   dataVersion: "FINAL-63-UNSAVED-AUDIO-2026-09-30",
   viewedRecords: [],
+  crossSearchPending: false,
   crossSearchUnlocked: false,
+  crossSearchUnlockEventShown: false,
+  advancedCrossSearchPending: false,
   advancedCrossSearchUnlocked: false,
+  advancedCrossSearchUnlockEventShown: false,
   dbAnalysisComplete: false,
   shownSystemEvents: [],
   unsavedAudio01Viewed: false,
@@ -90,24 +94,16 @@ function searchHint(state) {
 export function applyRecord(record, state) {
   const viewedRecords = [...new Set([...state.viewedRecords, record.id])];
   const shownSystemEvents = [...state.shownSystemEvents];
-  let crossSearchUnlocked = state.crossSearchUnlocked;
-  let advancedCrossSearchUnlocked = state.advancedCrossSearchUnlocked;
+  let crossSearchPending = state.crossSearchPending;
+  let advancedCrossSearchPending = state.advancedCrossSearchPending;
   let dbAnalysisComplete = state.dbAnalysisComplete;
   const events = [];
 
-  if (!crossSearchUnlocked && unlocks.crossSearch.every((id) => viewedRecords.includes(id))) {
-    crossSearchUnlocked = true;
-    if (!shownSystemEvents.includes("CROSS_SEARCH_RECOVERED")) {
-      shownSystemEvents.push("CROSS_SEARCH_RECOVERED");
-      events.push("CROSS_SEARCH_RECOVERED");
-    }
+  if (record.id === "SCRIPT_038" && !state.crossSearchUnlocked && !state.crossSearchUnlockEventShown) {
+    crossSearchPending = true;
   }
-  if (!advancedCrossSearchUnlocked && unlocks.advancedCrossSearch.every((id) => viewedRecords.includes(id))) {
-    advancedCrossSearchUnlocked = true;
-    if (!shownSystemEvents.includes("ADVANCED_CROSS_SEARCH_RECOVERED")) {
-      shownSystemEvents.push("ADVANCED_CROSS_SEARCH_RECOVERED");
-      events.push("ADVANCED_CROSS_SEARCH_RECOVERED");
-    }
+  if (record.id === "SCRIPT_060" && !state.advancedCrossSearchUnlocked && !state.advancedCrossSearchUnlockEventShown) {
+    advancedCrossSearchPending = true;
   }
   if (!dbAnalysisComplete && record.id === "SCRIPT_063" && unlocks.clearRequired.every((id) => viewedRecords.includes(id))) {
     dbAnalysisComplete = true;
@@ -120,14 +116,50 @@ export function applyRecord(record, state) {
     state: {
       ...state,
       viewedRecords,
-      crossSearchUnlocked,
-      advancedCrossSearchUnlocked,
+      crossSearchPending,
+      advancedCrossSearchPending,
       dbAnalysisComplete,
       shownSystemEvents,
       progress: viewedRecords.length
     },
     events
   };
+}
+
+export function returnToTop(state, recordId) {
+  if (recordId === "SCRIPT_038" && state.crossSearchPending && !state.crossSearchUnlockEventShown) {
+    return { state, events: ["CROSS_SEARCH_RECOVERED"] };
+  }
+  if (recordId === "SCRIPT_060" && state.advancedCrossSearchPending && !state.advancedCrossSearchUnlockEventShown) {
+    return { state, events: ["ADVANCED_CROSS_SEARCH_RECOVERED"] };
+  }
+  return { state, events: [] };
+}
+
+export function completeUnlockEvent(state, eventId) {
+  if (eventId === "CROSS_SEARCH_RECOVERED" && state.crossSearchPending && !state.crossSearchUnlockEventShown) {
+    return {
+      state: {
+        ...state,
+        crossSearchPending: false,
+        crossSearchUnlocked: true,
+        crossSearchUnlockEventShown: true,
+        shownSystemEvents: [...new Set([...state.shownSystemEvents, eventId])]
+      }
+    };
+  }
+  if (eventId === "ADVANCED_CROSS_SEARCH_RECOVERED" && state.advancedCrossSearchPending && !state.advancedCrossSearchUnlockEventShown) {
+    return {
+      state: {
+        ...state,
+        advancedCrossSearchPending: false,
+        advancedCrossSearchUnlocked: true,
+        advancedCrossSearchUnlockEventShown: true,
+        shownSystemEvents: [...new Set([...state.shownSystemEvents, eventId])]
+      }
+    };
+  }
+  return { state };
 }
 
 function findSingle(input, state) {

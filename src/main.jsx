@@ -3,7 +3,7 @@ import { createRoot } from "react-dom/client";
 import { AlertTriangle, ArrowLeft, Database, FileAudio, KeyRound, Mail, RotateCcw, Search as SearchIcon, ShieldCheck, Terminal } from "lucide-react";
 import canonical from "./data/canonical-script.json" with { type: "json" };
 import recordMedia from "./data/record-media.json" with { type: "json" };
-import { completeGame, completeUnsavedAudio01, completeUnsavedAudio02, initialState, search } from "./lib/engine.js";
+import { completeGame, completeUnlockEvent, completeUnsavedAudio01, completeUnsavedAudio02, initialState, returnToTop, search } from "./lib/engine.js";
 import "./styles.css";
 import "./additions.css";
 
@@ -82,8 +82,19 @@ function App() {
   }
 
   function goTop() {
+    const outcome = returnToTop(state, currentRecord?.id);
+    setState(outcome.state);
     setResult({ status: "START", title: "RECOVERED CASE FILE", body: canonical.gameStart.body });
+    setEventQueue(outcome.events);
+    setView("database");
+    window.scrollTo({ top: 0, behavior: "auto" });
+  }
+
+  function closeSystemEvent() {
+    const outcome = completeUnlockEvent(state, activeEvent?.id);
+    setState(outcome.state);
     setEventQueue([]);
+    setResult({ status: "START", title: "RECOVERED CASE FILE", body: canonical.gameStart.body });
     setView("database");
     window.scrollTo({ top: 0, behavior: "auto" });
   }
@@ -235,7 +246,7 @@ function App() {
       <button className="back-top" onClick={goTop}><ArrowLeft /> データベースTOPへ戻る</button>
     </section>}
 
-    {activeEvent && <div className="modal-backdrop"><section className="system-event"><span>SYSTEM EVENT</span><RichText text={activeEvent.body} /><button onClick={goTop}>データベースTOPへ戻る</button></section></div>}
+    {activeEvent && <div className="modal-backdrop"><section className="system-event"><span>{activeEvent.id === databaseAnalysisEvent.id ? "SYSTEM EVENT" : "SYSTEM UPDATE"}</span><RichText text={activeEvent.body} /><button onClick={closeSystemEvent}>データベースTOPへ</button></section></div>}
 
     {expandedMedia && <div className="media-modal" role="dialog" aria-modal="true" aria-label={expandedMedia.label} onClick={() => setExpandedMedia(null)}>
       <button className="media-close" onClick={() => setExpandedMedia(null)}>CLOSE ×</button>

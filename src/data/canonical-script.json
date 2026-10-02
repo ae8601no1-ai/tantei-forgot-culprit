@@ -1,20 +1,20 @@
 {
   "sourceFile": "source/CANONICAL_SCRIPT.md",
-  "sourceSha256": "e4128e7529b61d05b34d58c7063197bf1c34a50435d1c43d70ddd6b45683d090",
+  "sourceSha256": "0d893b0c2f14057bf77280ffb194be1e3a087e19a353bcf63804210f2174e77d",
   "gameStart": {
-    "body": "**CASE ID：KN-2026-08**\n\nSTATUS：未解決  \n調査担当：久世冬真  \n調査記録：復旧済み  \n最終報告書：破損\n\n私は、この事件を解決したらしい。\n\nだが、その結論を覚えていない。\n\n2026年9月2日夜、私は黒凪館の階段下で意識を失っているところを発見された。\n\n目を覚ましたとき、黒凪島へ渡ってからの記憶の大部分が失われていた。\n\n幸い、調査中に作成したデータベースは残っている。\n\n記憶は変わる。  \n記録は残る。\n\nこの記録の中に、私が忘れた答えがある。\n\nこのデータベースは、調査中に収集した人物、場所、資料、音声記録を検索するためのものだ。\n\n事件に関するすべての情報は、このデータベースに入力済みだ。\n\n調査を開始する。",
-    "sha256": "9640fd16d6d1821ce018901c53646821e9c5c840e647f4e396798ac675bf6a91"
+    "body": "**CASE ID：KN-2026-08**\n\nSTATUS：未解決\n\n調査担当：久世冬真\n\n調査記録：復旧済み\n\n最終報告書：破損\n\n調査地：黒凪島",
+    "sha256": "3b5fa239ea84e9533e9d06112ad726358963060fb145d9811596d9f36190c66e"
   },
   "systemEvents": [
     {
       "id": "CROSS_SEARCH_RECOVERED",
-      "body": "**DATABASE FUNCTION RECOVERED**\n\nCROSS SEARCH\n\n単独のキーワードではなく、二つの情報の関連性を照合する検索機能。\n\n使用方法：\n\n「検索語A　検索語B」\n\n二つの検索語の間に**全角スペース**を入力する。\n\n例：\n\n「人物名　資料名」\n\nCROSS SEARCHを有効化する。",
-      "sha256": "8935ba3e7fd2347388f183430e1ff493a4bff34093d225003e091f1b3ebde1c7"
+      "body": "――新たな照合機能を検出。\n\n**DATABASE FUNCTION RECOVERED**\n\n**CROSS SEARCH**\n\n複数の記録を照合する検索機能が利用可能になりました。\n\n**CROSS SEARCHが起動しました。**",
+      "sha256": "9251f808dd27251dbd610f9075fd628adc8c356e2f552db2bcb427cab8d552bb"
     },
     {
       "id": "ADVANCED_CROSS_SEARCH_RECOVERED",
-      "body": "**ADVANCED CROSS SEARCH RECOVERED**\n\n三つの検索キーを使用した関連照合機能を復旧。\n\n入力形式：\n\n「検索語A　検索語B　検索語C」\n\n各検索語の間には**全角スペース**を使用する。",
-      "sha256": "87c92b2806107857385d7d8964eb9b51eaf4d093ab27fb5475cd300ab4323e56"
+      "body": "――追加の照合機能を検出。\n\n**DATABASE FUNCTION RECOVERED**\n\n**ADVANCED CROSS SEARCH**\n\n三つの記録を同時に照合する高度検索機能が利用可能になりました。\n\n**ADVANCED CROSS SEARCHが起動しました。**",
+      "sha256": "4d8dfe50c91175731101b13c8482b90b6ed5619af903ec365114e21b06c04290"
     }
   ],
   "records": [
@@ -504,13 +504,13 @@
       "number": 38,
       "canonicalQuery": "御影七海",
       "title": "御影七海",
-      "body": "1986年生。\n\n御影征一郎の娘。\n\n御影澪の実妹。\n\n母親とともに本土で生活。\n\n幼少期に御影姓から離れたとみられるが、その後の記録が複数の資料に分散しており追跡できない。\n\n現在40歳。\n\n今回の黒凪島滞在者の中にも、同じ40歳の女性が一名いる。\n\n――ここまで入力したところで、システム内から未使用機能に関する記録を検出。\n\n**CROSS SEARCHが起動しました。**",
+      "body": "1986年生。\n\n御影征一郎の娘。\n\n御影澪の実妹。\n\n母親とともに本土で生活。\n\n幼少期に御影姓から離れたとみられるが、その後の記録が複数の資料に分散しており追跡できない。\n\n現在40歳。\n\n今回の黒凪島滞在者の中にも、同じ40歳の女性が一名いる。",
       "type": "single",
       "phase": 1,
       "orderIndependent": false,
       "locked": true,
       "editable": false,
-      "sha256": "69b27c1099c14a56b67053499b538af9e51c10f7f51ecda311f80665ef975940"
+      "sha256": "cc4283e8564b2fbdc1b62dc89d5d17a07a64d2b4924c8b123ac484a606d25d2f"
     },
     {
       "id": "SCRIPT_039",
@@ -931,8 +931,8 @@
       "sha256": "e19d50f573c1c629c955d5eb73e1d5614824edbf9131d8c30e2cf5098030dc09"
     },
     "gameStartReprise": {
-      "body": "**CASE ID：KN-2026-08**\n\nSTATUS：未解決\n\n調査担当：久世冬真\n\n調査記録：復旧済み\n\n最終報告書：破損\n\n私は、この事件を解決したらしい。\n\nだが、その結論を覚えていない。\n\n2026年9月2日夜、私は黒凪館の階段下で意識を失っているところを発見された。\n\n目を覚ましたとき、黒凪島へ渡ってからの記憶の大部分が失われていた。\n\n幸い、調査中に作成したデータベースは残っている。\n\n記憶は変わる。\n\n記録は残る。\n\nこの記録の中に、私が忘れた答えがある。\n\n調査を開始する。",
-      "sha256": "d35282cd909054d1a2937e7b5af61310ae306b6e203055fdac56cbd60bf82e41"
+      "body": "**CASE ID：KN-2026-08**\n\nSTATUS：未解決\n\n調査担当：久世冬真\n\n調査記録：復旧済み\n\n最終報告書：破損\n\n調査地：黒凪島",
+      "sha256": "3b5fa239ea84e9533e9d06112ad726358963060fb145d9811596d9f36190c66e"
     },
     "reconstructionComplete": {
       "body": "100%",

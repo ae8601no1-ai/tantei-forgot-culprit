@@ -7,7 +7,7 @@ import searchDb from "../src/data/search-db.json" with { type: "json" };
 import aliases from "../src/data/aliases.json" with { type: "json" };
 import unlocks from "../src/data/unlocks.json" with { type: "json" };
 import recordMedia from "../src/data/record-media.json" with { type: "json" };
-import { applyRecord, completeGame, completeUnsavedAudio01, completeUnsavedAudio02, initialState, normalizeAudio, search } from "../src/lib/engine.js";
+import { applyRecord, completeGame, completeUnlockEvent, completeUnsavedAudio01, completeUnsavedAudio02, initialState, normalizeAudio, returnToTop, search } from "../src/lib/engine.js";
 
 const hash = (value) => createHash("sha256").update(value, "utf8").digest("hex");
 const record = (id) => searchDb.records.find((item) => item.id === id);
@@ -23,13 +23,13 @@ test("05 御影隆一は08", () => assert.equal(search("御影隆一", initialSt
 test("06 音声記録202609010925は21", () => assert.equal(search("音声記録202609010925", initialState).result.recordId, "SCRIPT_021"));
 test("07 21は修正版会話", () => { const body = canonical.records[20].body; assert.match(body, /紙に日付があったから/); assert.match(body, /まだ事故か事件か判断しているとは話していません/); });
 test("08 38閲覧前はCROSS SEARCH不可", () => assert.equal(search("雨宮七海　御影七海", initialState).result.status, "NOT_FOUND"));
-test("09 38末尾に起動メッセージ", () => assert.match(canonical.records[37].body, /CROSS SEARCHが起動しました/));
-test("10 38だけでCROSS SEARCH解放", () => assert.equal(applyRecord(record("SCRIPT_038"), initialState).state.crossSearchUnlocked, true));
+test("09 38本文とCROSS SEARCHシステムイベントを分離", () => assert.doesNotMatch(canonical.records[37].body, /CROSS SEARCH|システム内から未使用機能/));
+test("10 38表示時はCROSS SEARCHをpendingにする", () => { const outcome = applyRecord(record("SCRIPT_038"), initialState); assert.equal(outcome.state.crossSearchPending, true); assert.equal(outcome.state.crossSearchUnlocked, false); assert.deepEqual(outcome.events, []); });
 test("11 TOPにCROSS SEARCH ACTIVE表示を実装", () => assert.match(appSource, /CROSS SEARCH MODE：ACTIVE/));
 test("12 全検索結果にTOPへ戻るボタン", () => assert.match(appSource, /result\.status !== "START".*データベースTOPへ戻る/s));
-test("13 TOP移動でstateをリセットしない", () => { const body = appSource.match(/function goTop\(\)[\s\S]*?\n  }/)?.[0] ?? ""; assert.doesNotMatch(body, /setState/); });
+test("13 TOP移動で進行stateを初期化しない", () => { const body = appSource.match(/function goTop\(\)[\s\S]*?\n  }/)?.[0] ?? ""; assert.match(body, /returnToTop/); assert.doesNotMatch(body, /setState\(initialState\)/); });
 test("14 60閲覧前はADVANCED不可", () => assert.equal(search("御影澪　水城沙耶　榊原美智子", { ...initialState, crossSearchUnlocked: true }).result.status, "NOT_FOUND"));
-test("15 60閲覧後にADVANCED解放", () => assert.equal(applyRecord(record("SCRIPT_060"), { ...initialState, crossSearchUnlocked: true }).state.advancedCrossSearchUnlocked, true));
+test("15 60表示時はADVANCEDをpendingにする", () => { const outcome = applyRecord(record("SCRIPT_060"), { ...initialState, crossSearchUnlocked: true }); assert.equal(outcome.state.advancedCrossSearchPending, true); assert.equal(outcome.state.advancedCrossSearchUnlocked, false); assert.deepEqual(outcome.events, []); });
 test("16 TOPにADVANCED ACTIVE表示を実装", () => assert.match(appSource, /ADVANCED CROSS SEARCH MODE：ACTIVE/));
 test("17 61を3語検索", () => assert.equal(search("御影澪　水城沙耶　榊原美智子", unlocked).result.recordId, "SCRIPT_061"));
 test("18 62を3語検索", () => assert.equal(search("御影澪　雨宮七海　御影征一郎", unlocked).result.recordId, "SCRIPT_062"));
@@ -54,7 +54,7 @@ test("36 第三事件犯人", () => assert.match(canonical.ending.caseReconstruc
 test("37 澪を落とした人物は御影隆一", () => assert.match(canonical.ending.caseReconstruction.body, /海へ転落させた人物：[\s\S]*御影隆一/));
 test("38 海へ飛び込んだ少年は相沢冬真", () => assert.match(canonical.ending.caseReconstruction.body, /海へ飛び込んだ少年：[\s\S]*相沢冬真/));
 test("39 現在名は久世冬真", () => assert.match(canonical.ending.caseReconstruction.body, /現在の名前：[\s\S]*久世冬真/));
-test("40 冒頭画面を再提示", () => assert.match(canonical.ending.gameStartReprise.body, /CASE ID：KN-2026-08[\s\S]*私は、この事件を解決したらしい/));
+test("40 冒頭とラストのRECOVERED CASE FILEを統一", () => assert.equal(canonical.ending.gameStartReprise.body, canonical.gameStart.body));
 test("41 冒頭ヒントを復活させない", () => { assert.doesNotMatch(canonical.gameStart.body, /最初に確認すべき場所|\*\*黒凪島\*\*。/); assert.doesNotMatch(canonical.ending.gameStartReprise.body, /最初に確認すべき場所|\*\*黒凪島\*\*。/); });
 test("42 PERSONAL NOTE表示", () => assert.match(canonical.ending.personalNote.body, /記憶は信用できない[\s\S]*――久世冬真/));
 test("43 RECONSTRUCTION COMPLETE 100%", () => { assert.match(canonical.ending.reconstructionComplete.body, /100%/); assert.match(canonical.ending.finalCard.body, /RECONSTRUCTION COMPLETE/); });
@@ -68,7 +68,7 @@ test("50 指定外本文と正本の整合性", async () => { const expected = (
 
 test("検索UX：全角スペース、語順、音声表記揺れ", () => { assert.equal(search("雨宮七海 御影七海", unlocked).result.status, "FORMAT_ERROR"); assert.equal(search("御影七海　雨宮七海", unlocked).result.recordId, "SCRIPT_039"); assert.equal(normalizeAudio("AUDIO202608301430"), "音声記録202608301430"); });
 test("画像添付は新番号へ追従", async () => { assert.match(recordMedia.SCRIPT_001.src, /kuronagi-island-map\.svg$/); assert.match(recordMedia.SCRIPT_002.src, /kuronagi-mansion-floor-map\.svg$/); assert.match(recordMedia.SCRIPT_034.src, /old-photo-1998\.jpg$/); for (const media of Object.values(recordMedia)) assert.ok((await readFile(new URL(`../public${media.src}`, import.meta.url))).length > 0); });
-test("正式stateをすべて保持", () => { for (const key of ["viewedRecords", "searchHistory", "crossSearchUnlocked", "advancedCrossSearchUnlocked", "dbAnalysisComplete", "shownSystemEvents", "unsavedAudio01Viewed", "unsavedAudio02Viewed", "gameCompleted"]) assert.ok(key in initialState, key); assert.deepEqual(unlocks.crossSearch, ["SCRIPT_038"]); assert.deepEqual(unlocks.advancedCrossSearch, ["SCRIPT_060"]); assert.ok(aliases["御影征一郎"].includes("征一郎")); });
+test("正式stateをすべて保持", () => { for (const key of ["viewedRecords", "searchHistory", "crossSearchPending", "crossSearchUnlocked", "crossSearchUnlockEventShown", "advancedCrossSearchPending", "advancedCrossSearchUnlocked", "advancedCrossSearchUnlockEventShown", "dbAnalysisComplete", "shownSystemEvents", "unsavedAudio01Viewed", "unsavedAudio02Viewed", "gameCompleted"]) assert.ok(key in initialState, key); assert.deepEqual(unlocks.crossSearch, ["SCRIPT_038"]); assert.deepEqual(unlocks.advancedCrossSearch, ["SCRIPT_060"]); assert.ok(aliases["御影征一郎"].includes("征一郎")); });
 test("導入は予約送信メールから認証へ進む", () => { assert.match(appSource, /2026年9月2日　21:51/); assert.match(appSource, /調査記録の確認依頼/); assert.match(appSource, /調査記録へアクセス/); });
 test("認証コードと失敗表示を実装", () => { assert.match(appSource, /AUTH_CODE = "KN-2026-08"/); assert.match(appSource, /AUTHENTICATION FAILED/); assert.match(appSource, /AUTHENTICATION ACCEPTED/); });
 test("開始ページにGAME STARTを表示しない", () => { assert.match(appSource, /title: "RECOVERED CASE FILE"/); assert.doesNotMatch(appSource, /<h1>GAME START<\/h1>/); });
@@ -79,4 +79,68 @@ test("不正確な検索語から候補を提示しない", () => {
   assert.match(result.body, /検索語を変更してください/);
   assert.equal("suggestion" in result, false);
   assert.doesNotMatch(result.body, /ですか？/);
+});
+
+test("RECOVERED CASE FILEは指定内容のみ", () => {
+  const expected = "**CASE ID：KN-2026-08**\n\nSTATUS：未解決\n\n調査担当：久世冬真\n\n調査記録：復旧済み\n\n最終報告書：破損\n\n調査地：黒凪島";
+  assert.equal(canonical.gameStart.body, expected);
+  assert.doesNotMatch(canonical.gameStart.body, /私は、この事件|結論を覚えていない|2026年9月2日夜|最初に確認すべき場所/);
+});
+
+test("38直後のTOP帰還でCROSS SEARCHを一度だけ解放", () => {
+  const viewed = applyRecord(record("SCRIPT_038"), initialState).state;
+  const returning = returnToTop(viewed, "SCRIPT_038");
+  assert.equal(returning.state.crossSearchPending, true);
+  assert.equal(returning.state.crossSearchUnlocked, false);
+  assert.deepEqual(returning.events, ["CROSS_SEARCH_RECOVERED"]);
+  const activated = completeUnlockEvent(returning.state, "CROSS_SEARCH_RECOVERED");
+  assert.equal(activated.state.crossSearchPending, false);
+  assert.equal(activated.state.crossSearchUnlocked, true);
+  assert.equal(activated.state.crossSearchUnlockEventShown, true);
+  assert.deepEqual(returnToTop(activated.state, "SCRIPT_038").events, []);
+});
+
+test("38以外からTOPへ戻ってもCROSS SEARCHを解放しない", () => {
+  const viewed = applyRecord(record("SCRIPT_038"), initialState).state;
+  const unrelated = returnToTop(viewed, "SCRIPT_037");
+  assert.equal(unrelated.state.crossSearchUnlocked, false);
+  assert.equal(unrelated.state.crossSearchPending, true);
+  assert.deepEqual(unrelated.events, []);
+});
+
+test("60直後のTOP帰還でADVANCED CROSS SEARCHを一度だけ解放", () => {
+  const base = { ...initialState, crossSearchUnlocked: true, crossSearchUnlockEventShown: true };
+  const viewed = applyRecord(record("SCRIPT_060"), base).state;
+  const returning = returnToTop(viewed, "SCRIPT_060");
+  assert.equal(returning.state.advancedCrossSearchPending, true);
+  assert.equal(returning.state.advancedCrossSearchUnlocked, false);
+  assert.deepEqual(returning.events, ["ADVANCED_CROSS_SEARCH_RECOVERED"]);
+  const activated = completeUnlockEvent(returning.state, "ADVANCED_CROSS_SEARCH_RECOVERED");
+  assert.equal(activated.state.advancedCrossSearchPending, false);
+  assert.equal(activated.state.advancedCrossSearchUnlocked, true);
+  assert.equal(activated.state.advancedCrossSearchUnlockEventShown, true);
+  assert.deepEqual(returnToTop(activated.state, "SCRIPT_060").events, []);
+});
+
+test("60以外からTOPへ戻ってもADVANCED CROSS SEARCHを解放しない", () => {
+  const base = { ...initialState, crossSearchUnlocked: true, crossSearchUnlockEventShown: true };
+  const viewed = applyRecord(record("SCRIPT_060"), base).state;
+  const unrelated = returnToTop(viewed, "SCRIPT_059");
+  assert.equal(unrelated.state.advancedCrossSearchUnlocked, false);
+  assert.equal(unrelated.state.advancedCrossSearchPending, true);
+  assert.deepEqual(unrelated.events, []);
+});
+
+test("60本文とADVANCEDシステムイベントを分離", () => {
+  assert.doesNotMatch(canonical.records[59].body, /ADVANCED CROSS SEARCHが起動しました|追加の照合機能/);
+  assert.match(canonical.systemEvents[1].body, /追加の照合機能[\s\S]*ADVANCED CROSS SEARCHが起動しました/);
+});
+
+test("解放状態はJSON保存後も保持される", () => {
+  const viewed = applyRecord(record("SCRIPT_038"), initialState).state;
+  const activated = completeUnlockEvent(returnToTop(viewed, "SCRIPT_038").state, "CROSS_SEARCH_RECOVERED").state;
+  const restored = { ...initialState, ...JSON.parse(JSON.stringify(activated)) };
+  assert.equal(restored.crossSearchUnlocked, true);
+  assert.equal(restored.crossSearchUnlockEventShown, true);
+  assert.equal(restored.crossSearchPending, false);
 });
