@@ -7,7 +7,9 @@ import searchDb from "../src/data/search-db.json" with { type: "json" };
 import aliases from "../src/data/aliases.json" with { type: "json" };
 import unlocks from "../src/data/unlocks.json" with { type: "json" };
 import recordMedia from "../src/data/record-media.json" with { type: "json" };
+import supportContent from "../src/data/investigation-support.json" with { type: "json" };
 import { applyRecord, completeGame, completeUnlockEvent, completeUnsavedAudio01, completeUnsavedAudio02, initialState, normalizeAudio, returnToTop, search } from "../src/lib/engine.js";
+import { availableSupportItems, initialSupportState, revealSupportLevel } from "../src/lib/support.js";
 
 const hash = (value) => createHash("sha256").update(value, "utf8").digest("hex");
 const record = (id) => searchDb.records.find((item) => item.id === id);
@@ -143,4 +145,73 @@ test("解放状態はJSON保存後も保持される", () => {
   assert.equal(restored.crossSearchUnlocked, true);
   assert.equal(restored.crossSearchUnlockEventShown, true);
   assert.equal(restored.crossSearchPending, false);
+});
+
+test("SUPPORT 01 初回プレイでは01と02だけを表示", () => {
+  assert.deepEqual(availableSupportItems(initialState).map((item) => item.id), ["01", "02"]);
+});
+
+test("SUPPORT 02 LEVEL 1では黒凪島を表示せずLEVEL 3だけに検索キーを表示", () => {
+  const item = supportContent.items.find((entry) => entry.id === "01");
+  assert.doesNotMatch(item.levels[0], /黒凪島/);
+  assert.doesNotMatch(item.levels[1], /黒凪島/);
+  assert.match(item.levels[2], /推奨検索キー：[\s\S]*黒凪島/);
+});
+
+test("SUPPORT 03 未解放システムの項目を表示しない", () => {
+  const ids = availableSupportItems(initialState).map((item) => item.id);
+  assert.equal(ids.includes("05"), false);
+  assert.equal(ids.includes("08"), false);
+  assert.equal(ids.includes("10"), false);
+});
+
+test("SUPPORT 04 進行状態に応じて項目を段階解放", () => {
+  assert.equal(availableSupportItems({ ...initialState, viewedRecords: ["SCRIPT_029"] }).some((item) => item.id === "03"), true);
+  assert.equal(availableSupportItems({ ...initialState, viewedRecords: ["SCRIPT_037"] }).some((item) => item.id === "04"), true);
+  assert.deepEqual(availableSupportItems({ ...initialState, crossSearchUnlocked: true }).filter((item) => ["05", "06"].includes(item.id)).map((item) => item.id), ["05", "06"]);
+  assert.equal(availableSupportItems({ ...initialState, viewedRecords: ["SCRIPT_057"] }).some((item) => item.id === "07"), true);
+  assert.equal(availableSupportItems({ ...initialState, advancedCrossSearchUnlocked: true }).some((item) => item.id === "08"), true);
+  assert.equal(availableSupportItems({ ...initialState, viewedRecords: ["SCRIPT_061"] }).some((item) => item.id === "09"), true);
+  assert.equal(availableSupportItems({ ...initialState, dbAnalysisComplete: true }).some((item) => item.id === "10"), true);
+});
+
+test("SUPPORT 05 ヒント閲覧は本編stateを変更しない", () => {
+  const mainBefore = structuredClone(initialState);
+  const supportAfter = revealSupportLevel(initialSupportState, "01", 3);
+  assert.deepEqual(initialState, mainBefore);
+  assert.equal(supportAfter.supportHintLevels["01"], 3);
+  assert.equal(initialState.viewedRecords.length, 0);
+  assert.equal(initialState.crossSearchUnlocked, false);
+});
+
+test("SUPPORT 06 帰還処理は本編進行stateを変更しない", () => {
+  const body = appSource.match(/function closeSupport\(\)[\s\S]*?\n  }/)?.[0] ?? "";
+  assert.doesNotMatch(body, /setState\(/);
+  assert.match(body, /setView\("database"\)/);
+});
+
+test("SUPPORT 07 ヒント段階をJSON保存後も保持", () => {
+  const progressed = revealSupportLevel(revealSupportLevel(initialSupportState, "01", 1), "01", 2);
+  const restored = { ...initialSupportState, ...JSON.parse(JSON.stringify(progressed)) };
+  assert.equal(restored.supportViewed, true);
+  assert.equal(restored.supportHintLevels["01"], 2);
+});
+
+test("SUPPORT 08 LEVEL 3は警告確認後のみ表示", () => {
+  assert.match(appSource, /推奨検索キーを確認する/);
+  assert.match(appSource, /検索キーそのものが表示されます/);
+  assert.match(appSource, /setSupportWarningOpen\(true\)/);
+  assert.match(appSource, /revealSupportLevel\(current, selectedSupport\.id, 3\)/);
+});
+
+test("SUPPORT 09 禁止された真相と直接的な犯人表現を含まない", () => {
+  const serialized = JSON.stringify(supportContent);
+  assert.doesNotMatch(serialized, /相沢冬真/);
+  assert.doesNotMatch(serialized, /犯人/);
+});
+
+test("SUPPORT 10 本編canonicalと検索DBはSUPPORTから独立", () => {
+  assert.equal(canonical.records.length, 63);
+  assert.equal(searchDb.records.length, 63);
+  assert.doesNotMatch(source, /INVESTIGATION SUPPORT/);
 });

@@ -1,13 +1,15 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { createRoot } from "react-dom/client";
-import { AlertTriangle, ArrowLeft, Database, FileAudio, KeyRound, Mail, RotateCcw, Search as SearchIcon, ShieldCheck, Terminal } from "lucide-react";
+import { AlertTriangle, ArrowLeft, Database, FileAudio, KeyRound, LifeBuoy, Mail, RotateCcw, Search as SearchIcon, ShieldCheck, Terminal } from "lucide-react";
 import canonical from "./data/canonical-script.json" with { type: "json" };
 import recordMedia from "./data/record-media.json" with { type: "json" };
 import { completeGame, completeUnlockEvent, completeUnsavedAudio01, completeUnsavedAudio02, initialState, returnToTop, search } from "./lib/engine.js";
+import { availableSupportItems, initialSupportState, revealSupportLevel, supportItemById } from "./lib/support.js";
 import "./styles.css";
 import "./additions.css";
 
 const SAVE_KEY = "kuze-private-investigation-db-final-63";
+const SUPPORT_KEY = "kuze-private-investigation-support";
 const AUTH_KEY = "kuze-private-investigation-db-authorized";
 const AUTH_CODE = "KN-2026-08";
 const DATA_VERSION = "FINAL-63-UNSAVED-AUDIO-2026-09-30";
@@ -23,6 +25,15 @@ function loadState() {
     return saved?.dataVersion === DATA_VERSION ? { ...initialState, ...saved } : initialState;
   } catch {
     return initialState;
+  }
+}
+
+function loadSupportState() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(SUPPORT_KEY));
+    return saved ? { ...initialSupportState, ...saved } : initialSupportState;
+  } catch {
+    return initialSupportState;
   }
 }
 
@@ -49,6 +60,7 @@ function RecordMedia({ media, onExpand }) {
 
 function App() {
   const [state, setState] = useState(initialState);
+  const [supportState, setSupportState] = useState(initialSupportState);
   const [ready, setReady] = useState(false);
   const [query, setQuery] = useState("");
   const [result, setResult] = useState({ status: "START", title: "RECOVERED CASE FILE", body: canonical.gameStart.body });
@@ -58,19 +70,27 @@ function App() {
   const [accessStage, setAccessStage] = useState("loading");
   const [authCode, setAuthCode] = useState("");
   const [authError, setAuthError] = useState(false);
+  const [supportListOpen, setSupportListOpen] = useState(false);
+  const [selectedSupportId, setSelectedSupportId] = useState(null);
+  const [supportWarningOpen, setSupportWarningOpen] = useState(false);
 
   useEffect(() => {
     setState(loadState());
+    setSupportState(loadSupportState());
     setAccessStage(localStorage.getItem(AUTH_KEY) === "accepted" ? "database" : "mail");
     setReady(true);
   }, []);
   useEffect(() => { if (ready) localStorage.setItem(SAVE_KEY, JSON.stringify(state)); }, [ready, state]);
+  useEffect(() => { if (ready) localStorage.setItem(SUPPORT_KEY, JSON.stringify(supportState)); }, [ready, supportState]);
 
   const currentRecord = result.recordId ? recordContent[result.recordId] : null;
   const currentMedia = currentRecord ? recordMedia[currentRecord.id] : null;
   const activeEvent = eventQueue[0] ? (canonical.systemEvents.find((event) => event.id === eventQueue[0]) ?? (eventQueue[0] === databaseAnalysisEvent.id ? databaseAnalysisEvent : null)) : null;
   const mode = state.advancedCrossSearchUnlocked ? "ADVANCED CROSS SEARCH" : state.crossSearchUnlocked ? "CROSS SEARCH" : "SEARCH";
   const history = useMemo(() => state.searchHistory ?? [], [state.searchHistory]);
+  const supportItems = useMemo(() => availableSupportItems(state), [state]);
+  const selectedSupport = selectedSupportId ? supportItemById(selectedSupportId) : null;
+  const selectedSupportLevel = selectedSupportId ? (supportState.supportHintLevels[selectedSupportId] ?? 0) : 0;
 
   function runSearch(value = query) {
     const outcome = search(value, state);
@@ -102,10 +122,37 @@ function App() {
   function reset() {
     if (!window.confirm("保存された調査記録を消去しますか？")) return;
     localStorage.removeItem(SAVE_KEY);
+    localStorage.removeItem(SUPPORT_KEY);
     setState(initialState);
+    setSupportState(initialSupportState);
     setResult({ status: "START", title: "RECOVERED CASE FILE", body: canonical.gameStart.body });
     setView("database");
     setEventQueue([]);
+  }
+
+  function openSupport() {
+    setSupportState((current) => ({ ...current, supportViewed: true }));
+    setSupportListOpen(false);
+    setSelectedSupportId(null);
+    setSupportWarningOpen(false);
+    setView("support");
+    window.scrollTo({ top: 0, behavior: "auto" });
+  }
+
+  function selectSupport(id) {
+    setSelectedSupportId(id);
+    setSupportWarningOpen(false);
+    setSupportState((current) => revealSupportLevel(current, id, 1));
+    window.scrollTo({ top: 0, behavior: "auto" });
+  }
+
+  function closeSupport() {
+    setSelectedSupportId(null);
+    setSupportListOpen(false);
+    setSupportWarningOpen(false);
+    setResult({ status: "START", title: "RECOVERED CASE FILE", body: canonical.gameStart.body });
+    setView("database");
+    window.scrollTo({ top: 0, behavior: "auto" });
   }
 
   if (!ready) return <main className="loading">DATABASE RECOVERY...</main>;
@@ -206,10 +253,52 @@ function App() {
           <h1>{currentRecord?.title ?? result.title ?? "DATABASE MESSAGE"}</h1>
           <RichText text={currentRecord?.body ?? result.body} />
           <RecordMedia media={currentMedia} onExpand={() => setExpandedMedia(currentMedia)} />
+          {result.status === "START" && <div className="support-entry">
+            <span>調査に行き詰まった場合</span>
+            <button type="button" onClick={openSupport}><LifeBuoy /> INVESTIGATION SUPPORT</button>
+          </div>}
           {result.status !== "START" && <button className="back-top" onClick={goTop}><ArrowLeft /> データベースTOPへ戻る</button>}
         </article>
       </section>
     </div>}
+
+    {view === "support" && <section className="special-screen support-screen">
+      <button className="support-return support-return-top" onClick={closeSupport}><ArrowLeft /> 調査へ戻る</button>
+      <span className="special-kicker">DATABASE ASSISTANCE MODULE　STATUS：AVAILABLE</span>
+      <h1>INVESTIGATION SUPPORT</h1>
+
+      {!selectedSupport && <div className="support-intro">
+        <h2>調査支援システム</h2>
+        <p>現在の調査状況に応じて、<br />確認すべき記録のヒントを表示します。</p>
+        <p>可能な限り自力で調査を続けたい場合は、<br />このページを閉じて調査へ戻ってください。</p>
+        <p>この機能の使用によって<br />調査データや検索履歴が変更されることはありません。</p>
+        {!supportListOpen && <button className="support-primary" onClick={() => setSupportListOpen(true)}>調査状況を選択</button>}
+      </div>}
+
+      {!selectedSupport && supportListOpen && <div className="support-list" aria-label="調査状況">
+        {supportItems.map((item) => <button key={item.id} onClick={() => selectSupport(item.id)}>
+          <span>{item.id}</span><b>{item.title}</b><small>SELECT STATUS</small>
+        </button>)}
+      </div>}
+
+      {selectedSupport && <div className="support-detail">
+        <button className="support-list-back" onClick={() => { setSelectedSupportId(null); setSupportWarningOpen(false); setSupportListOpen(true); }}>← 調査状況一覧へ</button>
+        <div className="support-detail-heading"><span>SUPPORT {selectedSupport.id}</span><h2>{selectedSupport.title}</h2></div>
+        {selectedSupport.levels.slice(0, selectedSupportLevel).map((level, index) => <section className={`support-level support-level-${index + 1}`} key={index}>
+          <span>LEVEL {index + 1}</span>
+          <RichText text={level} />
+        </section>)}
+        {selectedSupportLevel === 1 && <button className="support-primary" onClick={() => setSupportState((current) => revealSupportLevel(current, selectedSupport.id, 2))}>もう少し具体的な情報を見る</button>}
+        {selectedSupportLevel === 2 && !supportWarningOpen && <button className="support-primary" onClick={() => setSupportWarningOpen(true)}>推奨検索キーを確認する</button>}
+        {selectedSupportLevel === 2 && supportWarningOpen && <div className="support-warning" role="alert">
+          <b>WARNING</b>
+          <p>検索キーそのものが表示されます。<br />自力で調査を続けたい場合は、<br />ここで調査へ戻ってください。</p>
+          <div><button onClick={() => { setSupportState((current) => revealSupportLevel(current, selectedSupport.id, 3)); setSupportWarningOpen(false); }}>表示する</button><button onClick={closeSupport}>調査へ戻る</button></div>
+        </div>}
+      </div>}
+
+      <button className="support-return" onClick={closeSupport}><ArrowLeft /> 調査へ戻る</button>
+    </section>}
 
     {view === "audio-cache" && <section className="special-screen audio-cache-screen">
       <span className="special-kicker">RECOVERED TEMPORARY DATA</span>
