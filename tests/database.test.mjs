@@ -37,7 +37,14 @@ test("17 61を3語検索", () => assert.equal(search("御影澪　水城沙耶�
 test("18 62を3語検索", () => assert.equal(search("御影澪　雨宮七海　御影征一郎", unlocked).result.recordId, "SCRIPT_062"));
 test("19 63を3語検索", () => assert.equal(search("御影隆一　御影澪　桟橋", unlocked).result.recordId, "SCRIPT_063"));
 test("20 63終了前にCACHEは出現しない", () => assert.equal(initialState.dbAnalysisComplete, false));
-test("21 63終了後にDB解析完了", () => assert.equal(applyRecord(record("SCRIPT_063"), { ...initialState, advancedCrossSearchUnlocked: true }).state.dbAnalysisComplete, true));
+test("21 61・62未閲覧では63終了後もDB解析未完了", () => assert.equal(applyRecord(record("SCRIPT_063"), { ...initialState, advancedCrossSearchUnlocked: true }).state.dbAnalysisComplete, false));
+test("21b 61・62・63の全閲覧後にDB解析完了", () => {
+  let state = { ...initialState, advancedCrossSearchUnlocked: true };
+  state = applyRecord(record("SCRIPT_061"), state).state;
+  state = applyRecord(record("SCRIPT_062"), state).state;
+  state = applyRecord(record("SCRIPT_063"), state).state;
+  assert.equal(state.dbAnalysisComplete, true);
+});
 test("22 2 AUDIO FILES FOUNDを表示", () => assert.match(appSource, /2 AUDIO FILES FOUND/));
 test("23 音声を自動表示せずTOPへ戻る", () => assert.match(appSource, /DATABASE_ANALYSIS_COMPLETE[\s\S]*データベースTOPへ戻る/));
 test("24 TOPに未保存音声項目", () => assert.match(appSource, /保存完了していない音声記録/));
@@ -70,7 +77,12 @@ test("50 指定外本文と正本の整合性", async () => { const expected = (
 
 test("検索UX：全角スペース、語順、音声表記揺れ", () => { assert.equal(search("雨宮七海 御影七海", unlocked).result.status, "FORMAT_ERROR"); assert.equal(search("御影七海　雨宮七海", unlocked).result.recordId, "SCRIPT_039"); assert.equal(normalizeAudio("AUDIO202608301430"), "音声記録202608301430"); });
 test("画像添付は新番号へ追従", async () => { assert.match(recordMedia.SCRIPT_001.src, /kuronagi-island-map\.svg$/); assert.match(recordMedia.SCRIPT_002.src, /kuronagi-mansion-floor-map\.svg$/); assert.match(recordMedia.SCRIPT_034.src, /old-photo-1998\.jpg$/); for (const media of Object.values(recordMedia)) assert.ok((await readFile(new URL(`../public${media.src}`, import.meta.url))).length > 0); });
-test("正式stateをすべて保持", () => { for (const key of ["viewedRecords", "searchHistory", "crossSearchPending", "crossSearchUnlocked", "crossSearchUnlockEventShown", "advancedCrossSearchPending", "advancedCrossSearchUnlocked", "advancedCrossSearchUnlockEventShown", "dbAnalysisComplete", "shownSystemEvents", "unsavedAudio01Viewed", "unsavedAudio02Viewed", "gameCompleted"]) assert.ok(key in initialState, key); assert.deepEqual(unlocks.crossSearch, ["SCRIPT_038"]); assert.deepEqual(unlocks.advancedCrossSearch, ["SCRIPT_060"]); assert.ok(aliases["御影征一郎"].includes("征一郎")); });
+test("正式stateをすべて保持", () => { for (const key of ["viewedRecords", "searchHistory", "crossSearchPending", "crossSearchUnlocked", "crossSearchUnlockEventShown", "advancedCrossSearchPending", "advancedCrossSearchUnlocked", "advancedCrossSearchUnlockEventShown", "dbAnalysisComplete", "shownSystemEvents", "unsavedAudio01Viewed", "unsavedAudio02Viewed", "gameCompleted"]) assert.ok(key in initialState, key); assert.deepEqual(unlocks.crossSearch, ["SCRIPT_038"]); assert.deepEqual(unlocks.advancedCrossSearch, ["SCRIPT_060"]); assert.deepEqual(unlocks.clearRequired, ["SCRIPT_061", "SCRIPT_062", "SCRIPT_063"]); assert.ok(aliases["御影征一郎"].includes("征一郎")); });
+
+test("記録60は存在しない三語検索へ誘導しない", () => {
+  assert.doesNotMatch(canonical.records[59].body, /相沢佳代[\s\S]*相沢少年[\s\S]*久世冬真[\s\S]*同時照合/);
+  assert.match(canonical.records[59].body, /三つの記録から同時に照合/);
+});
 test("導入は予約送信メールから認証へ進む", () => { assert.match(appSource, /2026年9月2日　21:51/); assert.match(appSource, /調査記録の確認依頼/); assert.match(appSource, /調査記録へアクセス/); });
 test("認証コードと失敗表示を実装", () => { assert.match(appSource, /AUTH_CODE = "KN-2026-08"/); assert.match(appSource, /AUTHENTICATION FAILED/); assert.match(appSource, /AUTHENTICATION ACCEPTED/); });
 test("開始ページにGAME STARTを表示しない", () => { assert.match(appSource, /title: "RECOVERED CASE FILE"/); assert.doesNotMatch(appSource, /<h1>GAME START<\/h1>/); });

@@ -1,7 +1,7 @@
 {
   "crossSearch": ["SCRIPT_038"],
   "advancedCrossSearch": ["SCRIPT_060"],
-  "clearRequired": ["SCRIPT_063"],
+  "clearRequired": ["SCRIPT_061", "SCRIPT_062", "SCRIPT_063"],
   "recordRequirements": {
     "SCRIPT_043": ["SCRIPT_042"],
     "SCRIPT_045": ["SCRIPT_044"],
