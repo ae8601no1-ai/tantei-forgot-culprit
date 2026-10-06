@@ -13,7 +13,9 @@ export const initialState = {
   advancedCrossSearchPending: false,
   advancedCrossSearchUnlocked: false,
   advancedCrossSearchUnlockEventShown: false,
+  dbAnalysisPending: false,
   dbAnalysisComplete: false,
+  dbAnalysisEventShown: false,
   shownSystemEvents: [],
   unsavedAudio01Viewed: false,
   unsavedAudio02Viewed: false,
@@ -96,8 +98,7 @@ export function applyRecord(record, state) {
   const shownSystemEvents = [...state.shownSystemEvents];
   let crossSearchPending = state.crossSearchPending;
   let advancedCrossSearchPending = state.advancedCrossSearchPending;
-  let dbAnalysisComplete = state.dbAnalysisComplete;
-  const events = [];
+  let dbAnalysisPending = state.dbAnalysisPending;
 
   if (record.id === "SCRIPT_038" && !state.crossSearchUnlocked && !state.crossSearchUnlockEventShown) {
     crossSearchPending = true;
@@ -106,15 +107,12 @@ export function applyRecord(record, state) {
     advancedCrossSearchPending = true;
   }
   if (
-    !dbAnalysisComplete
-    && unlocks.clearRequired.includes(record.id)
+    record.id === "SCRIPT_063"
+    && !state.dbAnalysisComplete
+    && !state.dbAnalysisEventShown
     && unlocks.clearRequired.every((id) => viewedRecords.includes(id))
   ) {
-    dbAnalysisComplete = true;
-    if (!shownSystemEvents.includes("DATABASE_ANALYSIS_COMPLETE")) {
-      shownSystemEvents.push("DATABASE_ANALYSIS_COMPLETE");
-      events.push("DATABASE_ANALYSIS_COMPLETE");
-    }
+    dbAnalysisPending = true;
   }
   return {
     state: {
@@ -122,11 +120,11 @@ export function applyRecord(record, state) {
       viewedRecords,
       crossSearchPending,
       advancedCrossSearchPending,
-      dbAnalysisComplete,
+      dbAnalysisPending,
       shownSystemEvents,
       progress: viewedRecords.length
     },
-    events
+    events: []
   };
 }
 
@@ -136,6 +134,9 @@ export function returnToTop(state, recordId) {
   }
   if (recordId === "SCRIPT_060" && state.advancedCrossSearchPending && !state.advancedCrossSearchUnlockEventShown) {
     return { state, events: ["ADVANCED_CROSS_SEARCH_RECOVERED"] };
+  }
+  if (recordId === "SCRIPT_063" && state.dbAnalysisPending && !state.dbAnalysisComplete && !state.dbAnalysisEventShown) {
+    return { state, events: ["DATABASE_ANALYSIS_COMPLETE"] };
   }
   return { state, events: [] };
 }
@@ -159,6 +160,17 @@ export function completeUnlockEvent(state, eventId) {
         advancedCrossSearchPending: false,
         advancedCrossSearchUnlocked: true,
         advancedCrossSearchUnlockEventShown: true,
+        shownSystemEvents: [...new Set([...state.shownSystemEvents, eventId])]
+      }
+    };
+  }
+  if (eventId === "DATABASE_ANALYSIS_COMPLETE" && state.dbAnalysisPending && !state.dbAnalysisComplete && !state.dbAnalysisEventShown) {
+    return {
+      state: {
+        ...state,
+        dbAnalysisPending: false,
+        dbAnalysisComplete: true,
+        dbAnalysisEventShown: true,
         shownSystemEvents: [...new Set([...state.shownSystemEvents, eventId])]
       }
     };

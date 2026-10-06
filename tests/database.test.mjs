@@ -37,35 +37,45 @@ test("17 61を3語検索", () => assert.equal(search("御影澪　水城沙耶�
 test("18 62を3語検索", () => assert.equal(search("御影澪　雨宮七海　御影征一郎", unlocked).result.recordId, "SCRIPT_062"));
 test("19 63を3語検索", () => assert.equal(search("御影隆一　御影澪　桟橋", unlocked).result.recordId, "SCRIPT_063"));
 test("20 63終了前にCACHEは出現しない", () => assert.equal(initialState.dbAnalysisComplete, false));
-test("21 61・62未閲覧では63終了後もDB解析未完了", () => assert.equal(applyRecord(record("SCRIPT_063"), { ...initialState, advancedCrossSearchUnlocked: true }).state.dbAnalysisComplete, false));
-test("21b 61・62・63の全閲覧後にDB解析完了", () => {
+test("20b 61・62の閲覧ではDB解析イベントを発生させない", () => {
+  let state = { ...initialState, advancedCrossSearchUnlocked: true };
+  for (const id of ["SCRIPT_061", "SCRIPT_062"]) {
+    const outcome = applyRecord(record(id), state);
+    state = outcome.state;
+    assert.equal(state.dbAnalysisPending, false, id);
+    assert.equal(state.dbAnalysisComplete, false, id);
+    assert.deepEqual(outcome.events, [], id);
+  }
+});
+test("21 61・62未閲覧では63終了後もDB解析は保留されない", () => {
+  const outcome = applyRecord(record("SCRIPT_063"), { ...initialState, advancedCrossSearchUnlocked: true });
+  assert.equal(outcome.state.dbAnalysisPending, false);
+  assert.equal(outcome.state.dbAnalysisComplete, false);
+  assert.deepEqual(outcome.events, []);
+});
+test("21b 61・62閲覧後の63はDB解析を保留し、イベントを本文に混在させない", () => {
+  let state = { ...initialState, advancedCrossSearchUnlocked: true };
+  state = applyRecord(record("SCRIPT_061"), state).state;
+  state = applyRecord(record("SCRIPT_062"), state).state;
+  const outcome = applyRecord(record("SCRIPT_063"), state);
+  assert.equal(outcome.state.dbAnalysisPending, true);
+  assert.equal(outcome.state.dbAnalysisComplete, false);
+  assert.equal(outcome.state.dbAnalysisEventShown, false);
+  assert.deepEqual(outcome.events, []);
+});
+test("21c 63からTOPへ直接戻った時だけDB解析イベントを発火し、完了後は再発火しない", () => {
   let state = { ...initialState, advancedCrossSearchUnlocked: true };
   state = applyRecord(record("SCRIPT_061"), state).state;
   state = applyRecord(record("SCRIPT_062"), state).state;
   state = applyRecord(record("SCRIPT_063"), state).state;
-  assert.equal(state.dbAnalysisComplete, true);
-});
-test("21c 61・62・63は閲覧順にかかわらず最後の必須記録でDB解析完了", () => {
-  const permutations = [
-    ["SCRIPT_061", "SCRIPT_062", "SCRIPT_063"],
-    ["SCRIPT_061", "SCRIPT_063", "SCRIPT_062"],
-    ["SCRIPT_062", "SCRIPT_061", "SCRIPT_063"],
-    ["SCRIPT_062", "SCRIPT_063", "SCRIPT_061"],
-    ["SCRIPT_063", "SCRIPT_061", "SCRIPT_062"],
-    ["SCRIPT_063", "SCRIPT_062", "SCRIPT_061"]
-  ];
-
-  for (const order of permutations) {
-    let state = { ...initialState, advancedCrossSearchUnlocked: true };
-    let events = [];
-    for (const id of order) {
-      const outcome = applyRecord(record(id), state);
-      state = outcome.state;
-      events.push(...outcome.events);
-    }
-    assert.equal(state.dbAnalysisComplete, true, order.join(" -> "));
-    assert.deepEqual(events, ["DATABASE_ANALYSIS_COMPLETE"], order.join(" -> "));
-  }
+  assert.deepEqual(returnToTop(state, "SCRIPT_062").events, []);
+  const returning = returnToTop(state, "SCRIPT_063");
+  assert.deepEqual(returning.events, ["DATABASE_ANALYSIS_COMPLETE"]);
+  const completed = completeUnlockEvent(returning.state, "DATABASE_ANALYSIS_COMPLETE").state;
+  assert.equal(completed.dbAnalysisPending, false);
+  assert.equal(completed.dbAnalysisComplete, true);
+  assert.equal(completed.dbAnalysisEventShown, true);
+  assert.deepEqual(returnToTop(completed, "SCRIPT_063").events, []);
 });
 test("22 2 AUDIO FILES FOUNDを表示", () => assert.match(appSource, /2 AUDIO FILES FOUND/));
 test("23 音声を自動表示せずTOPへ戻る", () => assert.match(appSource, /DATABASE_ANALYSIS_COMPLETE[\s\S]*データベースTOPへ戻る/));
@@ -110,7 +120,14 @@ test("50 指定外本文と正本の整合性", async () => { const expected = (
 
 test("検索UX：全角スペース、語順、音声表記揺れ", () => { assert.equal(search("雨宮七海 御影七海", unlocked).result.status, "FORMAT_ERROR"); assert.equal(search("御影七海　雨宮七海", unlocked).result.recordId, "SCRIPT_039"); assert.equal(normalizeAudio("AUDIO202608301430"), "音声記録202608301430"); });
 test("画像添付は新番号へ追従", async () => { assert.match(recordMedia.SCRIPT_001.src, /kuronagi-island-map\.svg$/); assert.match(recordMedia.SCRIPT_002.src, /kuronagi-mansion-floor-map\.svg$/); assert.match(recordMedia.SCRIPT_034.src, /old-photo-1998\.jpg$/); for (const media of Object.values(recordMedia)) assert.ok((await readFile(new URL(`../public${media.src}`, import.meta.url))).length > 0); });
-test("正式stateをすべて保持", () => { for (const key of ["viewedRecords", "searchHistory", "crossSearchPending", "crossSearchUnlocked", "crossSearchUnlockEventShown", "advancedCrossSearchPending", "advancedCrossSearchUnlocked", "advancedCrossSearchUnlockEventShown", "dbAnalysisComplete", "shownSystemEvents", "unsavedAudio01Viewed", "unsavedAudio02Viewed", "gameCompleted"]) assert.ok(key in initialState, key); assert.deepEqual(unlocks.crossSearch, ["SCRIPT_038"]); assert.deepEqual(unlocks.advancedCrossSearch, ["SCRIPT_060"]); assert.deepEqual(unlocks.clearRequired, ["SCRIPT_061", "SCRIPT_062", "SCRIPT_063"]); assert.ok(aliases["御影征一郎"].includes("征一郎")); });
+test("正式stateをすべて保持", () => { for (const key of ["viewedRecords", "searchHistory", "crossSearchPending", "crossSearchUnlocked", "crossSearchUnlockEventShown", "advancedCrossSearchPending", "advancedCrossSearchUnlocked", "advancedCrossSearchUnlockEventShown", "dbAnalysisPending", "dbAnalysisComplete", "dbAnalysisEventShown", "shownSystemEvents", "unsavedAudio01Viewed", "unsavedAudio02Viewed", "gameCompleted"]) assert.ok(key in initialState, key); assert.deepEqual(unlocks.crossSearch, ["SCRIPT_038"]); assert.deepEqual(unlocks.advancedCrossSearch, ["SCRIPT_060"]); assert.deepEqual(unlocks.clearRequired, ["SCRIPT_061", "SCRIPT_062", "SCRIPT_063"]); assert.ok(aliases["御影征一郎"].includes("征一郎")); });
+test("旧セーブデータへDB解析保留stateを安全に補完できる", () => {
+  const legacySave = JSON.parse(JSON.stringify({ viewedRecords: ["SCRIPT_061"], dbAnalysisComplete: false }));
+  const restored = { ...initialState, ...legacySave };
+  assert.equal(restored.dbAnalysisPending, false);
+  assert.equal(restored.dbAnalysisEventShown, false);
+  assert.deepEqual(restored.viewedRecords, ["SCRIPT_061"]);
+});
 
 test("記録60は存在しない三語検索へ誘導しない", () => {
   assert.doesNotMatch(canonical.records[59].body, /相沢佳代[\s\S]*相沢少年[\s\S]*久世冬真[\s\S]*同時照合/);
