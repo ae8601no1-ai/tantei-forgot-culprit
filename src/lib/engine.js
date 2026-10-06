@@ -105,7 +105,11 @@ export function applyRecord(record, state) {
   if (record.id === "SCRIPT_060" && !state.advancedCrossSearchUnlocked && !state.advancedCrossSearchUnlockEventShown) {
     advancedCrossSearchPending = true;
   }
-  if (!dbAnalysisComplete && record.id === "SCRIPT_063" && unlocks.clearRequired.every((id) => viewedRecords.includes(id))) {
+  if (
+    !dbAnalysisComplete
+    && unlocks.clearRequired.includes(record.id)
+    && unlocks.clearRequired.every((id) => viewedRecords.includes(id))
+  ) {
     dbAnalysisComplete = true;
     if (!shownSystemEvents.includes("DATABASE_ANALYSIS_COMPLETE")) {
       shownSystemEvents.push("DATABASE_ANALYSIS_COMPLETE");

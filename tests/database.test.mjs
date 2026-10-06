@@ -45,6 +45,28 @@ test("21b 61・62・63の全閲覧後にDB解析完了", () => {
   state = applyRecord(record("SCRIPT_063"), state).state;
   assert.equal(state.dbAnalysisComplete, true);
 });
+test("21c 61・62・63は閲覧順にかかわらず最後の必須記録でDB解析完了", () => {
+  const permutations = [
+    ["SCRIPT_061", "SCRIPT_062", "SCRIPT_063"],
+    ["SCRIPT_061", "SCRIPT_063", "SCRIPT_062"],
+    ["SCRIPT_062", "SCRIPT_061", "SCRIPT_063"],
+    ["SCRIPT_062", "SCRIPT_063", "SCRIPT_061"],
+    ["SCRIPT_063", "SCRIPT_061", "SCRIPT_062"],
+    ["SCRIPT_063", "SCRIPT_062", "SCRIPT_061"]
+  ];
+
+  for (const order of permutations) {
+    let state = { ...initialState, advancedCrossSearchUnlocked: true };
+    let events = [];
+    for (const id of order) {
+      const outcome = applyRecord(record(id), state);
+      state = outcome.state;
+      events.push(...outcome.events);
+    }
+    assert.equal(state.dbAnalysisComplete, true, order.join(" -> "));
+    assert.deepEqual(events, ["DATABASE_ANALYSIS_COMPLETE"], order.join(" -> "));
+  }
+});
 test("22 2 AUDIO FILES FOUNDを表示", () => assert.match(appSource, /2 AUDIO FILES FOUND/));
 test("23 音声を自動表示せずTOPへ戻る", () => assert.match(appSource, /DATABASE_ANALYSIS_COMPLETE[\s\S]*データベースTOPへ戻る/));
 test("24 TOPに未保存音声項目", () => assert.match(appSource, /保存完了していない音声記録/));
