@@ -90,6 +90,17 @@ test("41 冒頭ヒントを復活させない", () => { assert.doesNotMatch(cano
 test("42 PERSONAL NOTE表示", () => assert.match(canonical.ending.personalNote.body, /記憶は信用できない[\s\S]*――久世冬真/));
 test("43 RECONSTRUCTION COMPLETE 100%", () => { assert.match(canonical.ending.reconstructionComplete.body, /100%/); assert.match(canonical.ending.finalCard.body, /RECONSTRUCTION COMPLETE/); });
 test("44 ENDへ到達可能", () => { assert.equal(completeGame({ ...initialState, unsavedAudio02Viewed: true }).gameCompleted, true); assert.match(canonical.ending.finalCard.body, /END/); });
+test("SIM3導線は完了済み最終画面だけに表示", () => {
+  const clearUrl = "https://sim3.net/portal/clear/#6e3efe4098f948e8a708d995dbeba85d";
+  assert.equal(appSource.split(clearUrl).length - 1, 1);
+  assert.match(appSource, /const SIM3_CLEAR_URL = "https:\/\/sim3\.net\/portal\/clear\/#6e3efe4098f948e8a708d995dbeba85d"/);
+  assert.match(appSource, /view === "ending" && state\.gameCompleted/);
+  assert.match(appSource, /<h1 id="completion-record-title">調査完了記録<\/h1>/);
+  assert.match(appSource, /事件記録の再構築が完了しました。/);
+  assert.match(appSource, /この調査結果を、<br \/>記録として残しますか。/);
+  assert.match(appSource, /href=\{SIM3_CLEAR_URL\} target="_blank" rel="noopener noreferrer">調査完了を記録する/);
+  assert.match(appSource, /className="return-db" onClick=\{goTop\}>DATABASEへ戻る/);
+});
 test("45 旧63検索は出ない", () => assert.notEqual(search("相沢佳代　相沢少年　久世冬真", unlocked).result.recordId, "SCRIPT_063"));
 test("46 旧64音声は出ない", () => assert.equal(search("音声記録202609022218", unlocked).result.status, "NOT_FOUND"));
 test("47 グラス旧65は出ない", () => assert.equal(search("グラス", unlocked).result.status, "NOT_FOUND"));

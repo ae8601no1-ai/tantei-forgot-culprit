@@ -13,6 +13,7 @@ const SUPPORT_KEY = "kuze-private-investigation-support";
 const AUTH_KEY = "kuze-private-investigation-db-authorized";
 const AUTH_CODE = "KN-2026-08";
 const DATA_VERSION = "FINAL-63-UNSAVED-AUDIO-2026-09-30";
+const SIM3_CLEAR_URL = "https://sim3.net/portal/clear/#6e3efe4098f948e8a708d995dbeba85d";
 const recordContent = Object.fromEntries(canonical.records.map((record) => [record.id, record]));
 const databaseAnalysisEvent = {
   id: "DATABASE_ANALYSIS_COMPLETE",
@@ -342,7 +343,7 @@ function App() {
       <img src={expandedMedia.src} alt={expandedMedia.alt} onClick={(event) => event.stopPropagation()} />
     </div>}
 
-    {view === "ending" && <div className="ending-screen"><button className="return-db" onClick={goTop}>DATABASEへ戻る</button><section><h1>CASE RECONSTRUCTION</h1><RichText text={canonical.ending.caseReconstruction.body} /></section><section><h1>RECOVERED CASE FILE</h1><RichText text={canonical.ending.gameStartReprise.body} /></section><section className="reconstruction-meter"><h1>RECONSTRUCTION COMPLETE</h1><RichText text={canonical.ending.reconstructionComplete.body} /></section><section><h1>PERSONAL NOTE</h1><RichText text={canonical.ending.personalNote.body} /></section><section className="final-card"><RichText text={canonical.ending.finalCard.body} /></section></div>}
+    {view === "ending" && state.gameCompleted && <div className="ending-screen"><button className="return-db" onClick={goTop}>DATABASEへ戻る</button><section><h1>CASE RECONSTRUCTION</h1><RichText text={canonical.ending.caseReconstruction.body} /></section><section><h1>RECOVERED CASE FILE</h1><RichText text={canonical.ending.gameStartReprise.body} /></section><section className="reconstruction-meter"><h1>RECONSTRUCTION COMPLETE</h1><RichText text={canonical.ending.reconstructionComplete.body} /></section><section><h1>PERSONAL NOTE</h1><RichText text={canonical.ending.personalNote.body} /></section><section className="final-card"><RichText text={canonical.ending.finalCard.body} /></section><section className="completion-record" aria-labelledby="completion-record-title"><h1 id="completion-record-title">調査完了記録</h1><strong>CASE KN-2026-08</strong><p>事件記録の再構築が完了しました。</p><p>この調査結果を、<br />記録として残しますか。</p><a href={SIM3_CLEAR_URL} target="_blank" rel="noopener noreferrer">調査完了を記録する</a></section></div>}
 
     <footer><span>このページはARG用です。全ての個人名。地名はフィクションです。</span><span>GOTO ARG LAB｜体験型ミステリー</span></footer>
   </main>;

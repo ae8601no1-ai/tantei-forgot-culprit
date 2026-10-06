@@ -321,6 +321,49 @@ footer {
   font-size: 28px;
 }
 
+.ending-screen > .completion-record {
+  padding-top: 64px;
+  text-align: center;
+}
+
+.completion-record > strong {
+  display: block;
+  margin-bottom: 28px;
+  color: #b9c7bf;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .13em;
+}
+
+.completion-record > p {
+  margin: 0 0 18px;
+  color: #a9b2ad;
+  font-family: "Yu Mincho","Hiragino Mincho ProN",serif;
+  font-size: 15px;
+  line-height: 1.9;
+}
+
+.completion-record > a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 46px;
+  margin-top: 20px;
+  border: 1px solid #526159;
+  background: #101613;
+  color: #c3cdc7;
+  padding: 12px 24px;
+  font-size: 12px;
+  letter-spacing: .1em;
+  text-decoration: none;
+}
+
+.completion-record > a:hover,
+.completion-record > a:focus-visible {
+  border-color: #788b81;
+  background: #151d19;
+}
+
 .support-entry {
   display: grid;
   justify-items: start;
