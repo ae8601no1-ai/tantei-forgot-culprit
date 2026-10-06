@@ -37,45 +37,49 @@ test("17 61を3語検索", () => assert.equal(search("御影澪　水城沙耶�
 test("18 62を3語検索", () => assert.equal(search("御影澪　雨宮七海　御影征一郎", unlocked).result.recordId, "SCRIPT_062"));
 test("19 63を3語検索", () => assert.equal(search("御影隆一　御影澪　桟橋", unlocked).result.recordId, "SCRIPT_063"));
 test("20 63終了前にCACHEは出現しない", () => assert.equal(initialState.dbAnalysisComplete, false));
-test("20b 61・62の閲覧ではDB解析イベントを発生させない", () => {
-  let state = { ...initialState, advancedCrossSearchUnlocked: true };
-  for (const id of ["SCRIPT_061", "SCRIPT_062"]) {
-    const outcome = applyRecord(record(id), state);
-    state = outcome.state;
-    assert.equal(state.dbAnalysisPending, false, id);
-    assert.equal(state.dbAnalysisComplete, false, id);
-    assert.deepEqual(outcome.events, [], id);
+test("20b 61〜63はどの2件だけを閲覧してもDB解析を保留しない", () => {
+  const pairs = [["SCRIPT_061", "SCRIPT_062"], ["SCRIPT_061", "SCRIPT_063"], ["SCRIPT_062", "SCRIPT_063"]];
+  for (const pair of pairs) {
+    let state = { ...initialState, advancedCrossSearchUnlocked: true };
+    for (const id of pair) {
+      const outcome = applyRecord(record(id), state);
+      state = outcome.state;
+      assert.deepEqual(outcome.events, [], `${pair.join(" -> ")}: ${id}`);
+    }
+    assert.equal(state.dbAnalysisPending, false, pair.join(" -> "));
+    assert.equal(state.dbAnalysisComplete, false, pair.join(" -> "));
+    assert.deepEqual(returnToTop(state, pair.at(-1)).events, [], pair.join(" -> "));
   }
 });
-test("21 61・62未閲覧では63終了後もDB解析は保留されない", () => {
-  const outcome = applyRecord(record("SCRIPT_063"), { ...initialState, advancedCrossSearchUnlocked: true });
-  assert.equal(outcome.state.dbAnalysisPending, false);
-  assert.equal(outcome.state.dbAnalysisComplete, false);
-  assert.deepEqual(outcome.events, []);
-});
-test("21b 61・62閲覧後の63はDB解析を保留し、イベントを本文に混在させない", () => {
-  let state = { ...initialState, advancedCrossSearchUnlocked: true };
-  state = applyRecord(record("SCRIPT_061"), state).state;
-  state = applyRecord(record("SCRIPT_062"), state).state;
-  const outcome = applyRecord(record("SCRIPT_063"), state);
-  assert.equal(outcome.state.dbAnalysisPending, true);
-  assert.equal(outcome.state.dbAnalysisComplete, false);
-  assert.equal(outcome.state.dbAnalysisEventShown, false);
-  assert.deepEqual(outcome.events, []);
-});
-test("21c 63からTOPへ直接戻った時だけDB解析イベントを発火し、完了後は再発火しない", () => {
-  let state = { ...initialState, advancedCrossSearchUnlocked: true };
-  state = applyRecord(record("SCRIPT_061"), state).state;
-  state = applyRecord(record("SCRIPT_062"), state).state;
-  state = applyRecord(record("SCRIPT_063"), state).state;
-  assert.deepEqual(returnToTop(state, "SCRIPT_062").events, []);
-  const returning = returnToTop(state, "SCRIPT_063");
-  assert.deepEqual(returning.events, ["DATABASE_ANALYSIS_COMPLETE"]);
-  const completed = completeUnlockEvent(returning.state, "DATABASE_ANALYSIS_COMPLETE").state;
-  assert.equal(completed.dbAnalysisPending, false);
-  assert.equal(completed.dbAnalysisComplete, true);
-  assert.equal(completed.dbAnalysisEventShown, true);
-  assert.deepEqual(returnToTop(completed, "SCRIPT_063").events, []);
+test("21 61〜63は全6順序で3件目の本文中はpendingのまま、TOP帰還時だけ解析完了する", () => {
+  const permutations = [
+    ["SCRIPT_061", "SCRIPT_062", "SCRIPT_063"],
+    ["SCRIPT_061", "SCRIPT_063", "SCRIPT_062"],
+    ["SCRIPT_062", "SCRIPT_061", "SCRIPT_063"],
+    ["SCRIPT_062", "SCRIPT_063", "SCRIPT_061"],
+    ["SCRIPT_063", "SCRIPT_061", "SCRIPT_062"],
+    ["SCRIPT_063", "SCRIPT_062", "SCRIPT_061"]
+  ];
+
+  for (const order of permutations) {
+    let state = { ...initialState, advancedCrossSearchUnlocked: true };
+    for (const id of order) {
+      const outcome = applyRecord(record(id), state);
+      state = outcome.state;
+      assert.deepEqual(outcome.events, [], `${order.join(" -> ")}: 本文中`);
+    }
+    assert.equal(state.dbAnalysisPending, true, order.join(" -> "));
+    assert.equal(state.dbAnalysisComplete, false, order.join(" -> "));
+    assert.equal(state.dbAnalysisEventShown, false, order.join(" -> "));
+
+    const returning = returnToTop(state, order.at(-1));
+    assert.deepEqual(returning.events, ["DATABASE_ANALYSIS_COMPLETE"], `${order.join(" -> ")}: TOP帰還`);
+    const completed = completeUnlockEvent(returning.state, "DATABASE_ANALYSIS_COMPLETE").state;
+    assert.equal(completed.dbAnalysisPending, false, order.join(" -> "));
+    assert.equal(completed.dbAnalysisComplete, true, order.join(" -> "));
+    assert.equal(completed.dbAnalysisEventShown, true, order.join(" -> "));
+    assert.deepEqual(returnToTop(completed, order.at(-1)).events, [], `${order.join(" -> ")}: 再表示禁止`);
+  }
 });
 test("22 2 AUDIO FILES FOUNDを表示", () => assert.match(appSource, /2 AUDIO FILES FOUND/));
 test("23 音声を自動表示せずTOPへ戻る", () => assert.match(appSource, /DATABASE_ANALYSIS_COMPLETE[\s\S]*データベースTOPへ戻る/));

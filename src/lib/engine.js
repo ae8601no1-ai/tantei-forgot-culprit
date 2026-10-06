@@ -107,7 +107,7 @@ export function applyRecord(record, state) {
     advancedCrossSearchPending = true;
   }
   if (
-    record.id === "SCRIPT_063"
+    unlocks.clearRequired.includes(record.id)
     && !state.dbAnalysisComplete
     && !state.dbAnalysisEventShown
     && unlocks.clearRequired.every((id) => viewedRecords.includes(id))
@@ -135,7 +135,13 @@ export function returnToTop(state, recordId) {
   if (recordId === "SCRIPT_060" && state.advancedCrossSearchPending && !state.advancedCrossSearchUnlockEventShown) {
     return { state, events: ["ADVANCED_CROSS_SEARCH_RECOVERED"] };
   }
-  if (recordId === "SCRIPT_063" && state.dbAnalysisPending && !state.dbAnalysisComplete && !state.dbAnalysisEventShown) {
+  if (
+    unlocks.clearRequired.includes(recordId)
+    && unlocks.clearRequired.every((id) => state.viewedRecords.includes(id))
+    && state.dbAnalysisPending
+    && !state.dbAnalysisComplete
+    && !state.dbAnalysisEventShown
+  ) {
     return { state, events: ["DATABASE_ANALYSIS_COMPLETE"] };
   }
   return { state, events: [] };
